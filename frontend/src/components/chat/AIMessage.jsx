@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import ReactMarkdown from 'react-markdown';
-import { Bot, ThumbsUp, ThumbsDown, BookmarkCheck, ChevronDown, ChevronUp } from 'lucide-react';
+import { Bot, ThumbsUp, ThumbsDown, BookmarkCheck, ChevronDown, ChevronUp, Copy, Check } from 'lucide-react';
 import SourceCard from '../citations/SourceCard';
 import TraceTimeline from '../trace/TraceTimeline';
 import { api } from '../../services/api';
@@ -8,6 +8,17 @@ import { api } from '../../services/api';
 export default function AIMessage({ message }) {
   const [feedbackGiven, setFeedbackGiven] = useState(null);
   const [showSources, setShowSources] = useState(false);
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(message.content || '');
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (e) {
+      console.error('Failed to copy text', e);
+    }
+  };
 
   const handleFeedback = async (rating) => {
     if (feedbackGiven || !message.id) return;
@@ -71,38 +82,34 @@ export default function AIMessage({ message }) {
           <TraceTimeline trace={message.trace} latencyMs={message.latency_ms || 0} />
         )}
 
-        {/* Minimal Feedback Buttons */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '6px', marginTop: '10px' }}>
+        {/* Action Row: Copy & Feedback Buttons */}
+        <div className="message-actions ai-actions">
           <button
+            type="button"
+            onClick={handleCopy}
+            className="msg-action-btn ai-copy-btn"
+            title={copied ? 'Copied to clipboard!' : 'Copy response'}
+          >
+            {copied ? <Check size={13} style={{ color: 'var(--success)' }} /> : <Copy size={13} />}
+            <span style={{ fontSize: '0.74rem' }}>{copied ? 'Copied' : 'Copy'}</span>
+          </button>
+
+          <div className="action-divider" />
+
+          <button
+            type="button"
             onClick={() => handleFeedback(5)}
             disabled={feedbackGiven !== null}
-            style={{
-              background: 'transparent',
-              border: 'none',
-              color: feedbackGiven === 5 ? 'var(--primary-light)' : 'var(--text-dim)',
-              padding: '4px',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              borderRadius: 'var(--radius-sm)',
-            }}
+            className={`msg-action-btn ${feedbackGiven === 5 ? 'active-thumb' : ''}`}
             title="Helpful"
           >
             <ThumbsUp size={13} />
           </button>
           <button
+            type="button"
             onClick={() => handleFeedback(1)}
             disabled={feedbackGiven !== null}
-            style={{
-              background: 'transparent',
-              border: 'none',
-              color: feedbackGiven === 1 ? 'var(--danger)' : 'var(--text-dim)',
-              padding: '4px',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              borderRadius: 'var(--radius-sm)',
-            }}
+            className={`msg-action-btn ${feedbackGiven === 1 ? 'active-thumb-down' : ''}`}
             title="Unhelpful"
           >
             <ThumbsDown size={13} />

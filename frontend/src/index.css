@@ -407,6 +407,74 @@ code, pre {
   box-shadow: var(--shadow-sm);
 }
 
+/* Message Actions (Copy & Feedback) */
+.message-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.ai-actions {
+  justify-content: flex-end;
+  margin-top: 10px;
+}
+
+.user-actions {
+  justify-content: flex-end;
+  margin-top: 6px;
+}
+
+.msg-action-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-dim);
+  padding: 4px 7px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  border-radius: var(--radius-sm);
+  transition: all 0.15s ease;
+  font-size: 0.74rem;
+  line-height: 1;
+}
+
+.msg-action-btn:hover {
+  background: var(--bg-tertiary);
+  color: var(--text-main);
+}
+
+.ai-copy-btn:hover {
+  color: var(--primary);
+  background: #eef2ff;
+}
+
+.user-copy-btn {
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.user-copy-btn:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.msg-action-btn.active-thumb {
+  color: var(--primary);
+  background: #eef2ff;
+}
+
+.msg-action-btn.active-thumb-down {
+  color: var(--danger);
+  background: #fee2e2;
+}
+
+.action-divider {
+  width: 1px;
+  height: 12px;
+  background: var(--border-subtle);
+  margin: 0 2px;
+}
+
 /* Markdown in AI Message */
 .markdown-content {
   font-size: 0.92rem;
