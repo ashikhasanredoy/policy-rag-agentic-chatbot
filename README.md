@@ -5,8 +5,11 @@
 [![LangGraph](https://img.shields.io/badge/Orchestration-LangGraph-orange.svg)](https://www.langchain.com/langgraph)
 [![Qdrant](https://img.shields.io/badge/VectorDB-Qdrant-red.svg)](https://qdrant.tech/)
 [![React](https://img.shields.io/badge/Frontend-React%20%2B%20Vite-61dafb.svg)](https://react.dev/)
+[![UI Development](https://img.shields.io/badge/Frontend%20Developed%20By-Claude%20AI-blueviolet.svg)](https://anthropic.com)
 
 An enterprise-grade, production-style **Company Policy Assistant** powered by **LangGraph Agentic Orchestration**, **OLMo Language Model**, **Hybrid Retrieval (Qdrant Vector DB + BM25 Lexical Index)**, **Reciprocal Rank Fusion (RRF)**, **Cross-Encoder Reranking**, and strict **Answerability & Faithfulness Guardrails**.
+
+> **Note**: The entire modern minimalist white frontend interface (React 18 + Vite, point-wise markdown rendering, slide toggle sources, and dynamic chat history management) was developed by **Claude AI**.
 
 ---
 
@@ -250,3 +253,11 @@ Run the complete multi-service stack with a single command:
 ```bash
 docker-compose up --build
 ```
+
+---
+
+## 🤖 Attribution & Credits
+
+- **Frontend Development & UI Design**: Built and designed by **Claude AI (Anthropic)** — featuring a modern white aesthetic, collapsible history sidebar, slide-down source citations, and real-time verification traces.
+- **Backend & RAG Pipeline**: LangGraph, OLMo, Qdrant Vector Search, BM25 Index, Reciprocal Rank Fusion (RRF), and multi-stage verification guardrails.
+
