@@ -1,0 +1,104 @@
+[
+  {
+    "id": "eval_001",
+    "question": "How many days of paid annual leave do full-time permanent employees get each year?",
+    "answerable": true,
+    "expected_policy": "Comprehensive Annual Leave and Absence Management Policy",
+    "expected_facts": ["20 days", "1.66 working days per month"]
+  },
+  {
+    "id": "eval_002",
+    "question": "How many unused annual leave days can I carry over into the next year, and when do they expire?",
+    "answerable": true,
+    "expected_policy": "Comprehensive Annual Leave and Absence Management Policy",
+    "expected_facts": ["maximum of 5 unused annual leave days", "March 31st"]
+  },
+  {
+    "id": "eval_003",
+    "question": "How many weeks of paid maternity and paternity leave does the company provide?",
+    "answerable": true,
+    "expected_policy": "Comprehensive Annual Leave and Absence Management Policy",
+    "expected_facts": ["16 weeks", "maternity", "6 weeks", "paternity"]
+  },
+  {
+    "id": "eval_004",
+    "question": "How many days per week can employees work remotely under the hybrid policy?",
+    "answerable": true,
+    "expected_policy": "Remote, Hybrid Workplace, and Telecommuting Policy",
+    "expected_facts": ["up to two (2) days per week", "manager approval"]
+  },
+  {
+    "id": "eval_005",
+    "question": "What is the one-time home office equipment stipend and monthly internet allowance?",
+    "answerable": true,
+    "expected_policy": "Remote, Hybrid Workplace, and Telecommuting Policy",
+    "expected_facts": ["$500.00 USD", "$50.00 USD per month"]
+  },
+  {
+    "id": "eval_006",
+    "question": "What is the 401(k) company matching percentage and vesting schedule?",
+    "answerable": true,
+    "expected_policy": "Employee Benefits, Compensation Structure, and Wellness Policy",
+    "expected_facts": ["50% matching contribution up to 6%", "vest immediately at 100%"]
+  },
+  {
+    "id": "eval_007",
+    "question": "What is the maximum annual tuition reimbursement assistance available?",
+    "answerable": true,
+    "expected_policy": "Employee Benefits, Compensation Structure, and Wellness Policy",
+    "expected_facts": ["$5,250.00 USD per calendar year"]
+  },
+  {
+    "id": "eval_008",
+    "question": "What is the maximum daily meal per diem for overnight business travel?",
+    "answerable": true,
+    "expected_policy": "Business Travel, Expense Reimbursement, and Corporate Card Policy",
+    "expected_facts": ["$75.00 USD per day", "Breakfast: $15, Lunch: $25, Dinner: $35"]
+  },
+  {
+    "id": "eval_009",
+    "question": "What is the standard hotel rate limit in Tier-1 cities like New York and London?",
+    "answerable": true,
+    "expected_policy": "Business Travel, Expense Reimbursement, and Corporate Card Policy",
+    "expected_facts": ["$280.00 USD per night"]
+  },
+  {
+    "id": "eval_010",
+    "question": "What is the minimum character length and complexity required for corporate passwords?",
+    "answerable": true,
+    "expected_policy": "Corporate Information Security and Access Control Policy",
+    "expected_facts": ["minimum of fourteen (14) characters", "FIDO2 hardware MFA"]
+  },
+  {
+    "id": "eval_011",
+    "question": "What is the gift threshold that requires declaration under the Code of Conduct?",
+    "answerable": true,
+    "expected_policy": "Code of Business Conduct, Corporate Ethics, and Whistleblower Policy",
+    "expected_facts": ["Exceeding $100.00 USD", "Corporate Gift Registry"]
+  },
+  {
+    "id": "eval_012",
+    "question": "What is the response SLA deadline for customer Data Subject Access Requests (DSAR)?",
+    "answerable": true,
+    "expected_policy": "Customer Data Privacy and Global Compliance (GDPR/CCPA) Policy",
+    "expected_facts": ["thirty (30) calendar days"]
+  },
+  {
+    "id": "eval_013",
+    "question": "Does the company provide a monthly personal housing allowance or rent stipend?",
+    "answerable": false,
+    "notes": "No-Answer test case: Housing allowance is not mentioned. System MUST abstain."
+  },
+  {
+    "id": "eval_014",
+    "question": "Can employees bring pet dogs, cats, or birds into the corporate office facilities?",
+    "answerable": false,
+    "notes": "No-Answer test case: Pet policy is not present. System MUST abstain."
+  },
+  {
+    "id": "eval_015",
+    "question": "What is the company policy regarding corporate private jet travel for managers?",
+    "answerable": false,
+    "notes": "No-Answer test case: Private jet travel is not in policy. System MUST abstain."
+  }
+]
