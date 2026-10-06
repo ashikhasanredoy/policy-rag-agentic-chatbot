@@ -90,6 +90,65 @@ Unlike generic chatbots that hallucinate plausible answers when documents lack e
 
 ---
 
+## 🧩 Node-by-Node Pipeline Architecture
+
+The core agent workflow is orchestrated with **LangGraph**, where state transitions between 12 distinct nodes through deterministic and conditional edges:
+
+```mermaid
+graph TD
+    Start([User Input]) --> analyze_query[1. analyze_query]
+    
+    %% Intent routing
+    analyze_query -->|GENERAL_CHAT| general_chat[2. general_chat]
+    analyze_query -->|POLICY_CATEGORY| policy_category[3. policy_category]
+    analyze_query -->|POLICY_LIST| policy_list[4. policy_list]
+    analyze_query -->|OUT_OF_SCOPE| out_of_scope[5. out_of_scope]
+    analyze_query -->|POLICY_QUERY| retrieve[6. retrieve]
+    
+    %% Fast terminal nodes
+    general_chat --> End([End / UI Response])
+    policy_category --> End
+    policy_list --> End
+    out_of_scope --> End
+    
+    %% RAG Pipeline
+    retrieve --> grade_relevance[7. grade_relevance]
+    
+    grade_relevance -->|Score < 0.60| abstain[12. abstain]
+    grade_relevance -->|Score >= 0.60| grade_answerability[8. grade_answerability]
+    
+    grade_answerability -->|No Evidence / Negative Match| abstain
+    grade_answerability -->|Evidence Present| generate[9. generate]
+    
+    generate --> grade_faithfulness[10. grade_faithfulness]
+    
+    grade_faithfulness -->|Faithful| End
+    grade_faithfulness -->|Hallucination & Retries < Max| retry_query[11. retry_query]
+    grade_faithfulness -->|Hallucination & Retries >= Max| abstain
+    
+    retry_query --> retrieve
+    abstain --> End
+```
+
+### 📋 Detailed Node Directory
+
+| # | Node Name | Role & Responsibility | Key Logic & Output | Next Transition |
+|---|:---|:---|:---|:---|
+| **1** | `analyze_query` | **Intent Router & Query Parser** | Classifies incoming query into one of 5 intents (`GENERAL_CHAT`, `POLICY_CATEGORY`, `POLICY_LIST`, `OUT_OF_SCOPE`, `POLICY_QUERY`) and generates expanded keyword representations. | Routes conditionally to nodes 2, 3, 4, 5, or 6. |
+| **2** | `general_chat` | **Conversational Assistant** | Handles greetings, identity, small talk, gratitude, and suggests sample questions without RAG overhead. | Direct terminal to `END`. |
+| **3** | `policy_category` | **Category Guide** | Provides broad summaries for categories (HR, Leave, Travel, Remote, IT, Benefits, Ethics) with suggested clickable follow-up questions. | Direct terminal to `END`. |
+| **4** | `policy_list` | **Active Policy Catalog** | Returns a structured summary list of all currently active policies indexed in the system. | Direct terminal to `END`. |
+| **5** | `out_of_scope` | **Enterprise Redirection** | Detects non-policy questions (coding, weather, trivia) and provides a polite enterprise redirection back to company policies. | Direct terminal to `END`. |
+| **6** | `retrieve` | **Hybrid Dense + Lexical Retrieval** | Runs vector search (Qdrant with Cosine Similarity) and lexical search (Okapi BM25), merges candidate ranks with **Reciprocal Rank Fusion (RRF, $k=60$)**, and scores with **Cross-Encoder Reranker**. | Transitions to `grade_relevance`. |
+| **7** | `grade_relevance` | **Candidate Relevance Filter** | Evaluates candidate chunks against a relevance threshold ($\ge 0.60$), pruning noise and retaining grounded context. | Routes to `grade_answerability` if passed, or `abstain` if empty. |
+| **8** | `grade_answerability` | **Deterministic Anti-Hallucination Guardrail** | Enforces *"No Evidence → No Answer"*. Checks for explicit concept match and negative queries (e.g. *housing allowance*, *pets in office*). | Routes to `generate` if facts exist; otherwise routes immediately to `abstain`. |
+| **9** | `generate` | **OLMo Grounded Synthesis** | Synthesizes point-wise structured answers (`•`) based strictly on verified context chunks without external assumptions. | Transitions to `grade_faithfulness`. |
+| **10** | `grade_faithfulness` | **Self-Correction Verifier** | Verifies that every claim in the response is directly supported by the context snippets. Detects hallucinations or ungrounded statements. | Routes to `END` if faithful, `retry_query` if retry count < max, or `abstain`. |
+| **11** | `retry_query` | **Query Rewriter & Self-Correction Loop** | Modifies retrieval parameters and search keywords when generation fails faithfulness grading. | Loops back to `retrieve` (up to `MAX_RETRIES`). |
+| **12** | `abstain` | **Safe Compliance Refusal** | Emits a standardized compliance refusal explaining why the query cannot be answered from active policies and advises contacting HR/manager. | Direct terminal to `END`. |
+
+---
+
 ## 🏛️ System Architecture
 
 ```text
