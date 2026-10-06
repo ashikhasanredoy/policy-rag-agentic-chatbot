@@ -48,6 +48,16 @@ async def get_conversation_history(
             "answerable": m.answerable,
             "confidence": m.confidence,
             "sources": m.sources,
+            "latency_ms": m.latency_ms or 0.0,
+            "trace": {
+                "relevance_passed": (m.retrieval_log.relevance_score >= 0.6) if m.retrieval_log else (len(m.sources or []) > 0),
+                "relevance_score": m.retrieval_log.relevance_score if m.retrieval_log else 0.0,
+                "answerability_passed": m.answerable,
+                "answerability_score": m.retrieval_log.answerability_score if m.retrieval_log else 0.0,
+                "faithfulness_passed": (m.retrieval_log.faithfulness_score >= 0.7) if m.retrieval_log else True,
+                "faithfulness_score": m.retrieval_log.faithfulness_score if m.retrieval_log else 1.0,
+                "conflict_detected": False
+            } if m.role == "assistant" else None,
             "created_at": m.created_at
         } for m in messages],
         message="Messages retrieved"

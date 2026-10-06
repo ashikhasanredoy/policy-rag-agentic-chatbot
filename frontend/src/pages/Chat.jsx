@@ -11,39 +11,78 @@ export default function Chat() {
   const [currentConvId, setCurrentConvId] = useState(null);
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(() => {
+    const saved = localStorage.getItem('policy_sidebar_open');
+    return saved !== null ? JSON.parse(saved) : true;
+  });
   const messagesEndRef = useRef(null);
+  const viewportRef = useRef(null);
   const inputRef = useRef(null);
+  const isInitialRestoreRef = useRef(true);
 
   useEffect(() => {
     loadConversations();
   }, []);
 
-  const loadConversations = async () => {
+  const loadConversations = async (targetIdToSelect = null) => {
     try {
       const res = await api.getConversations();
       if (res.data) {
         setConversations(res.data);
+
+        // Determine which conversation to restore
+        const savedId = targetIdToSelect || localStorage.getItem('policy_active_conv_id');
+        const convToRestore = res.data.find((c) => c.id === savedId) || (savedId ? null : (res.data.length > 0 ? res.data[0] : null));
+
+        if (convToRestore) {
+          handleSelectConversation(convToRestore.id, true);
+        } else {
+          isInitialRestoreRef.current = false;
+        }
       }
     } catch (e) {
       console.error('Failed to load conversations', e);
     }
   };
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  const scrollToBottom = (instant = false) => {
+    if (instant) {
+      if (viewportRef.current) {
+        viewportRef.current.scrollTop = viewportRef.current.scrollHeight;
+      }
+    } else {
+      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }
   };
 
   useEffect(() => {
-    scrollToBottom();
+    if (isInitialRestoreRef.current) {
+      scrollToBottom(true);
+    } else {
+      scrollToBottom(false);
+    }
   }, [messages, loading]);
 
-  const handleSelectConversation = async (convId) => {
+  const handleToggleSidebar = (open) => {
+    setSidebarOpen(open);
+    localStorage.setItem('policy_sidebar_open', JSON.stringify(open));
+  };
+
+  const handleSelectConversation = async (convId, isInitial = false) => {
     setCurrentConvId(convId);
+    localStorage.setItem('policy_active_conv_id', convId);
     try {
       const res = await api.getMessages(convId);
       if (res.data) {
         setMessages(res.data);
+        if (isInitial) {
+          setTimeout(() => {
+            scrollToBottom(true);
+            isInitialRestoreRef.current = false;
+          }, 40);
+        } else {
+          isInitialRestoreRef.current = false;
+        }
       }
     } catch (e) {
       console.error('Failed to load messages', e);
@@ -56,6 +95,7 @@ export default function Chat() {
       await api.deleteConversation(convId);
       setConversations((prev) => prev.filter((c) => c.id !== convId));
       if (currentConvId === convId) {
+        localStorage.removeItem('policy_active_conv_id');
         handleNewChat();
       }
     } catch (err) {
@@ -64,15 +104,20 @@ export default function Chat() {
   };
 
   const handleNewChat = () => {
+    localStorage.removeItem('policy_active_conv_id');
     setCurrentConvId(null);
     setMessages([]);
-    loadConversations();
+    isInitialRestoreRef.current = false;
+    api.getConversations().then((res) => {
+      if (res.data) setConversations(res.data);
+    });
     setTimeout(() => {
       inputRef.current?.focus();
     }, 50);
   };
 
   const handleSendMessage = async (text) => {
+    isInitialRestoreRef.current = false;
     const userMsg = { id: `temp_${Date.now()}`, role: 'user', content: text };
     setMessages((prev) => [...prev, userMsg]);
     setLoading(true);
@@ -85,7 +130,8 @@ export default function Chat() {
 
       if (!currentConvId && res.conversation_id) {
         setCurrentConvId(res.conversation_id);
-        loadConversations();
+        localStorage.setItem('policy_active_conv_id', res.conversation_id);
+        loadConversations(res.conversation_id);
       }
 
       const aiMsg = {
@@ -124,7 +170,7 @@ export default function Chat() {
             <Plus size={16} /> New Chat
           </button>
           <button
-            onClick={() => setSidebarOpen(false)}
+            onClick={() => handleToggleSidebar(false)}
             className="sidebar-toggle-btn"
             title="Hide Sidebar"
           >
@@ -170,7 +216,7 @@ export default function Chat() {
         {!sidebarOpen && (
           <div className="floating-top-controls">
             <button
-              onClick={() => setSidebarOpen(true)}
+              onClick={() => handleToggleSidebar(true)}
               className="floating-btn"
               title="Show Sidebar"
             >
@@ -186,7 +232,7 @@ export default function Chat() {
           </div>
         )}
 
-        <div className="messages-viewport">
+        <div className="messages-viewport" ref={viewportRef}>
           {messages.length === 0 && !loading && (
             <div style={{ margin: 'auto', textAlign: 'center', color: 'var(--text-dim)', fontSize: '0.9rem' }}>
               Ask any question about company policies below to start a new chat.
