@@ -529,6 +529,21 @@ code, pre {
   font-size: 0.85em;
 }
 
+.streaming-cursor {
+  display: inline-block;
+  margin-left: 3px;
+  color: var(--primary);
+  font-weight: 700;
+  animation: cursorBlink 0.75s infinite;
+  vertical-align: baseline;
+  user-select: none;
+}
+
+@keyframes cursorBlink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
 /* Citations Section with Slide Button */
 .citations-wrapper {
   margin-top: 12px;

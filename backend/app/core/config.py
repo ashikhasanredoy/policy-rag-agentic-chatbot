@@ -39,8 +39,8 @@ class Settings(BaseSettings):
     # RAG & Grader Thresholds calibrated for production long-form policy chunks
     RETRIEVAL_TOP_K: int = 10
     RERANK_TOP_K: int = 4
-    RELEVANCE_THRESHOLD: float = 0.35
-    ANSWERABILITY_THRESHOLD: float = 0.45
+    RELEVANCE_THRESHOLD: float = 0.25
+    ANSWERABILITY_THRESHOLD: float = 0.35
     FAITHFULNESS_THRESHOLD: float = 0.70
     MAX_AGENT_RETRIES: int = 2
 

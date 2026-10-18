@@ -143,6 +143,7 @@ export default function Chat() {
         sources: res.sources,
         trace: res.trace,
         latency_ms: res.latency_ms,
+        isStreaming: true,
       };
 
       setMessages((prev) => [...prev, aiMsg]);
@@ -243,7 +244,11 @@ export default function Chat() {
             msg.role === 'user' ? (
               <UserMessage key={msg.id || index} message={msg} />
             ) : (
-              <AIMessage key={msg.id || index} message={msg} />
+              <AIMessage
+                key={msg.id || index}
+                message={msg}
+                onStreamProgress={() => scrollToBottom(false)}
+              />
             )
           )}
           {loading && <TypingIndicator />}

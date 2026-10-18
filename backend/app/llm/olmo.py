@@ -90,8 +90,8 @@ class OLMoLLM:
         clean_items = [re.sub(r"^[\s•\-]+", "", it).strip() for it in selected]
         if len(clean_items) > 1:
             points = "\n\n".join([f"• {it}" for it in clean_items])
-            return f"According to company policy:\n\n{points}"
+            return points
         else:
-            return f"According to company policy:\n\n• {clean_items[0]}"
+            return f"• {clean_items[0]}"
 
 olmo_llm = OLMoLLM()

@@ -27,6 +27,8 @@ def analyze_query_node(state: PolicyState) -> Dict[str, Any]:
         r"\bhr\b": "human resources annual leave time off remote work",
         r"\bwfh\b": "work from home remote work",
         r"\bpto\b": "paid time off annual leave vacation",
+        r"\bvacation\b": "annual leave vacation",
+        r"\bvacations\b": "annual leave vacations",
         r"\bsick leave\b": "medical leave health leave",
         r"\bexp\b": "expense reimbursement per diem",
         r"\bbyod\b": "bring your own device personal mobile device",

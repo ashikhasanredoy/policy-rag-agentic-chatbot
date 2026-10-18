@@ -52,10 +52,10 @@ class AnswerabilityGrader:
 
         # Subject Specificity Verification:
         # If the query is about specific unmentioned concepts (e.g. 'housing', 'jet', 'pet', 'dog', 'cat')
-        negative_hallucination_triggers = ["housing", "pet", "dog", "cat", "bird", "jet", "yacht", "relocation allowance"]
+        negative_hallucination_triggers = ["housing", "pet", "pets", "dog", "dogs", "cat", "cats", "bird", "birds", "jet", "yacht", "relocation allowance"]
         for trigger in negative_hallucination_triggers:
-            if trigger in query.lower():
-                if trigger not in combined_text and stem(trigger) not in context_stems:
+            if re.search(rf"\b{re.escape(trigger)}\b", query.lower()):
+                if not re.search(rf"\b{re.escape(trigger)}\b", combined_text) and stem(trigger) not in context_stems:
                     reason = f"Explicit subject query concept '{trigger}' not found in active policies."
                     logger.info(f"Answerability grader: UNANSWERABLE ({reason})")
                     return False, 0.0, reason

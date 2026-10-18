@@ -1,18 +1,52 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { Bot, ThumbsUp, ThumbsDown, BookmarkCheck, ChevronDown, ChevronUp, Copy, Check } from 'lucide-react';
 import SourceCard from '../citations/SourceCard';
 import TraceTimeline from '../trace/TraceTimeline';
 import { api } from '../../services/api';
 
-export default function AIMessage({ message }) {
+export default function AIMessage({ message, onStreamProgress }) {
   const [feedbackGiven, setFeedbackGiven] = useState(null);
   const [showSources, setShowSources] = useState(false);
   const [copied, setCopied] = useState(false);
 
+  const fullContent = message.content || '';
+  const isStreamingRequested = Boolean(message.isStreaming);
+  const [displayedContent, setDisplayedContent] = useState(isStreamingRequested ? '' : fullContent);
+  const [isDoneStreaming, setIsDoneStreaming] = useState(!isStreamingRequested);
+
+  useEffect(() => {
+    if (!isStreamingRequested) {
+      setDisplayedContent(fullContent);
+      setIsDoneStreaming(true);
+      return;
+    }
+
+    // Progressive streaming token simulation
+    const tokens = fullContent.split(/(?<=\s+)/);
+    let idx = 0;
+    let accumulated = '';
+
+    const interval = setInterval(() => {
+      if (idx < tokens.length) {
+        accumulated += tokens[idx];
+        setDisplayedContent(accumulated);
+        idx++;
+        if (onStreamProgress) onStreamProgress();
+      } else {
+        clearInterval(interval);
+        setDisplayedContent(fullContent);
+        setIsDoneStreaming(true);
+        if (onStreamProgress) onStreamProgress();
+      }
+    }, 22);
+
+    return () => clearInterval(interval);
+  }, [message.id, isStreamingRequested, fullContent]);
+
   const handleCopy = async () => {
     try {
-      await navigator.clipboard.writeText(message.content || '');
+      await navigator.clipboard.writeText(fullContent);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch (e) {
@@ -40,11 +74,12 @@ export default function AIMessage({ message }) {
       <div className="message-card">
         {/* Message Content with Markdown & Point-wise rendering */}
         <div className="markdown-content">
-          <ReactMarkdown>{message.content || ''}</ReactMarkdown>
+          <ReactMarkdown>{displayedContent || ''}</ReactMarkdown>
+          {!isDoneStreaming && <span className="streaming-cursor">▋</span>}
         </div>
 
-        {/* Citations Slide Toggle Button & Collapsible Content */}
-        {isAnswerable && message.sources && message.sources.length > 0 && (
+        {/* Citations Slide Toggle Button & Collapsible Content (Fade in once streaming completes) */}
+        {isDoneStreaming && isAnswerable && message.sources && message.sources.length > 0 && (
           <div className="citations-wrapper">
             <button
               type="button"
@@ -77,44 +112,46 @@ export default function AIMessage({ message }) {
           </div>
         )}
 
-        {/* Trace Timeline */}
-        {message.trace && (
+        {/* Trace Timeline (Revealed when streaming completes) */}
+        {isDoneStreaming && message.trace && (
           <TraceTimeline trace={message.trace} latencyMs={message.latency_ms || 0} />
         )}
 
         {/* Action Row: Copy & Feedback Buttons */}
-        <div className="message-actions ai-actions">
-          <button
-            type="button"
-            onClick={handleCopy}
-            className="msg-action-btn ai-copy-btn"
-            title={copied ? 'Copied to clipboard!' : 'Copy response'}
-          >
-            {copied ? <Check size={13} style={{ color: 'var(--success)' }} /> : <Copy size={13} />}
-            <span style={{ fontSize: '0.74rem' }}>{copied ? 'Copied' : 'Copy'}</span>
-          </button>
+        {isDoneStreaming && (
+          <div className="message-actions ai-actions">
+            <button
+              type="button"
+              onClick={handleCopy}
+              className="msg-action-btn ai-copy-btn"
+              title={copied ? 'Copied to clipboard!' : 'Copy response'}
+            >
+              {copied ? <Check size={13} style={{ color: 'var(--success)' }} /> : <Copy size={13} />}
+              <span style={{ fontSize: '0.74rem' }}>{copied ? 'Copied' : 'Copy'}</span>
+            </button>
 
-          <div className="action-divider" />
+            <div className="action-divider" />
 
-          <button
-            type="button"
-            onClick={() => handleFeedback(5)}
-            disabled={feedbackGiven !== null}
-            className={`msg-action-btn ${feedbackGiven === 5 ? 'active-thumb' : ''}`}
-            title="Helpful"
-          >
-            <ThumbsUp size={13} />
-          </button>
-          <button
-            type="button"
-            onClick={() => handleFeedback(1)}
-            disabled={feedbackGiven !== null}
-            className={`msg-action-btn ${feedbackGiven === 1 ? 'active-thumb-down' : ''}`}
-            title="Unhelpful"
-          >
-            <ThumbsDown size={13} />
-          </button>
-        </div>
+            <button
+              type="button"
+              onClick={() => handleFeedback(5)}
+              disabled={feedbackGiven !== null}
+              className={`msg-action-btn ${feedbackGiven === 5 ? 'active-thumb' : ''}`}
+              title="Helpful"
+            >
+              <ThumbsUp size={13} />
+            </button>
+            <button
+              type="button"
+              onClick={() => handleFeedback(1)}
+              disabled={feedbackGiven !== null}
+              className={`msg-action-btn ${feedbackGiven === 1 ? 'active-thumb-down' : ''}`}
+              title="Unhelpful"
+            >
+              <ThumbsDown size={13} />
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
