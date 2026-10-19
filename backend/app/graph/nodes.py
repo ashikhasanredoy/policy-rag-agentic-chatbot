@@ -360,7 +360,9 @@ def abstain_node(state: PolicyState) -> Dict[str, Any]:
             f"⚠️ **Policy Conflict Detected**: {conflict_details}\n\n"
             "I found contradictory rules across active company policy documents. "
             "To prevent providing incorrect guidance, I cannot give a definitive rule. "
-            "Please consult the Policy Compliance Officer or HR representative for clarification."
+            "Please consult the Policy Compliance Officer or Human Resources (abcd-company.policy.hr@gmail.com).\n\n"
+            "📧 **Contact Information:**\n"
+            "• **HR Email:** [abcd-company.policy.hr@gmail.com](mailto:abcd-company.policy.hr@gmail.com)"
         )
         status = "conflict_detected"
     else:
@@ -368,7 +370,9 @@ def abstain_node(state: PolicyState) -> Dict[str, Any]:
             f"ℹ️ I couldn't find information regarding your request in the active company policies.\n\n"
             f"*Reason:* {reason}\n\n"
             "To ensure compliance and accuracy, I do not generate unverified company rules. "
-            "Please check with your department manager or Human Resources."
+            "Please check with your department manager or Human Resources (abcd-company.policy.hr@gmail.com).\n\n"
+            "📧 **Contact Information:**\n"
+            "• **HR Email:** [abcd-company.policy.hr@gmail.com](mailto:abcd-company.policy.hr@gmail.com)"
         )
         status = "abstained_not_found"
 

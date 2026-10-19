@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Plus, PanelLeftClose, PanelLeft, Trash2 } from 'lucide-react';
+import { Plus, PanelLeftClose, PanelLeft, Trash2, MoreHorizontal, Pin } from 'lucide-react';
 import UserMessage from '../components/chat/UserMessage';
 import AIMessage from '../components/chat/AIMessage';
 import TypingIndicator from '../components/chat/TypingIndicator';
@@ -9,6 +9,15 @@ import { api } from '../services/api';
 export default function Chat() {
   const [conversations, setConversations] = useState([]);
   const [currentConvId, setCurrentConvId] = useState(null);
+  const [activeMenuId, setActiveMenuId] = useState(null);
+  const [pinnedIds, setPinnedIds] = useState(() => {
+    try {
+      const saved = localStorage.getItem('policy_pinned_conv_ids');
+      return saved ? JSON.parse(saved) : [];
+    } catch (e) {
+      return [];
+    }
+  });
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(() => {
@@ -20,8 +29,22 @@ export default function Chat() {
   const inputRef = useRef(null);
   const isInitialRestoreRef = useRef(true);
 
+  const handleTogglePin = (e, convId) => {
+    e.stopPropagation();
+    setPinnedIds((prev) => {
+      const isPinned = prev.includes(convId);
+      const updated = isPinned ? prev.filter((id) => id !== convId) : [convId, ...prev];
+      localStorage.setItem('policy_pinned_conv_ids', JSON.stringify(updated));
+      return updated;
+    });
+    setActiveMenuId(null);
+  };
+
   useEffect(() => {
     loadConversations();
+    const handleOutsideClick = () => setActiveMenuId(null);
+    window.addEventListener('click', handleOutsideClick);
+    return () => window.removeEventListener('click', handleOutsideClick);
   }, []);
 
   const loadConversations = async (targetIdToSelect = null) => {
@@ -43,6 +66,47 @@ export default function Chat() {
     } catch (e) {
       console.error('Failed to load conversations', e);
     }
+  };
+
+  const getGroupedConversations = () => {
+    const groups = {
+      'Pinned': [],
+      'Today': [],
+      '7 Days': [],
+      '30 Days': [],
+      'Older': [],
+    };
+
+    const now = new Date();
+    const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+    const sevenDaysAgo = startOfToday - 7 * 24 * 60 * 60 * 1000;
+    const thirtyDaysAgo = startOfToday - 30 * 24 * 60 * 60 * 1000;
+
+    conversations.forEach((c) => {
+      if (pinnedIds.includes(c.id)) {
+        groups['Pinned'].push(c);
+        return;
+      }
+
+      const dateStr = c.updated_at || c.created_at;
+      let convTime = Date.now();
+      if (dateStr) {
+        convTime = new Date(dateStr.endsWith('Z') ? dateStr : dateStr + 'Z').getTime();
+        if (isNaN(convTime)) convTime = new Date(dateStr).getTime();
+      }
+
+      if (convTime >= startOfToday) {
+        groups['Today'].push(c);
+      } else if (convTime >= sevenDaysAgo) {
+        groups['7 Days'].push(c);
+      } else if (convTime >= thirtyDaysAgo) {
+        groups['30 Days'].push(c);
+      } else {
+        groups['Older'].push(c);
+      }
+    });
+
+    return Object.entries(groups).filter(([_, items]) => items.length > 0);
   };
 
   const scrollToBottom = (instant = false) => {
@@ -94,6 +158,11 @@ export default function Chat() {
     try {
       await api.deleteConversation(convId);
       setConversations((prev) => prev.filter((c) => c.id !== convId));
+      setPinnedIds((prev) => {
+        const updated = prev.filter((id) => id !== convId);
+        localStorage.setItem('policy_pinned_conv_ids', JSON.stringify(updated));
+        return updated;
+      });
       if (currentConvId === convId) {
         localStorage.removeItem('policy_active_conv_id');
         handleNewChat();
@@ -162,6 +231,11 @@ export default function Chat() {
     }
   };
 
+  const cleanTitle = (rawTitle) => {
+    if (!rawTitle) return 'Policy Discussion';
+    return rawTitle.replace(/\.{2,}$/, '').replace(/…+$/, '').trim();
+  };
+
   return (
     <div className="chat-layout">
       {/* Sidebar */}
@@ -179,32 +253,68 @@ export default function Chat() {
           </button>
         </div>
 
-        <div style={{ fontSize: '0.72rem', textTransform: 'uppercase', color: 'var(--text-dim)', fontWeight: 700, padding: '0 4px', letterSpacing: '0.04em' }}>
-          History
-        </div>
-
         <div className="chat-history-list">
           {conversations.length === 0 ? (
             <div style={{ color: 'var(--text-dim)', fontSize: '0.82rem', textAlign: 'center', marginTop: '24px' }}>
               No previous chats
             </div>
           ) : (
-            conversations.map((c) => (
-              <div
-                key={c.id}
-                onClick={() => handleSelectConversation(c.id)}
-                className={`history-item ${currentConvId === c.id ? 'active' : ''}`}
-                title={c.title || 'Policy Discussion'}
-              >
-                <span className="history-title">{c.title || 'Policy Discussion'}</span>
-                <button
-                  type="button"
-                  className="history-delete-btn"
-                  title="Delete conversation"
-                  onClick={(e) => handleDeleteConversation(e, c.id)}
-                >
-                  <Trash2 size={13} />
-                </button>
+            getGroupedConversations().map(([groupTitle, convList]) => (
+              <div key={groupTitle} className="history-group">
+                <div className="history-group-header">{groupTitle}</div>
+                {convList.map((c) => {
+                  const isActive = currentConvId === c.id;
+                  const isMenuOpen = activeMenuId === c.id;
+                  const isPinned = pinnedIds.includes(c.id);
+                  const displayTitle = cleanTitle(c.title);
+                  return (
+                    <div
+                      key={c.id}
+                      onClick={() => handleSelectConversation(c.id)}
+                      className={`history-item ${isActive ? 'active' : ''}`}
+                      title={displayTitle}
+                    >
+                      <span className="history-title">{displayTitle}</span>
+                      {isPinned && <Pin size={12} className="history-pin-badge" />}
+                      <div className="history-action-container" onClick={(e) => e.stopPropagation()}>
+                        <button
+                          type="button"
+                          className={`history-action-btn ${(isActive || isMenuOpen) ? 'force-visible' : ''}`}
+                          title="Options"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setActiveMenuId(activeMenuId === c.id ? null : c.id);
+                          }}
+                        >
+                          <MoreHorizontal size={15} />
+                        </button>
+                        {isMenuOpen && (
+                          <div className="history-dropdown-menu">
+                            <button
+                              type="button"
+                              className="history-dropdown-item"
+                              onClick={(e) => handleTogglePin(e, c.id)}
+                            >
+                              <Pin size={13} style={isPinned ? { fill: 'currentColor' } : {}} />
+                              <span>{isPinned ? 'Unpin' : 'Pin'}</span>
+                            </button>
+                            <button
+                              type="button"
+                              className="history-dropdown-item danger"
+                              onClick={(e) => {
+                                handleDeleteConversation(e, c.id);
+                                setActiveMenuId(null);
+                              }}
+                            >
+                              <Trash2 size={13} />
+                              <span>Delete</span>
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
             ))
           )}

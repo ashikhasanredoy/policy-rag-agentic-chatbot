@@ -25,7 +25,7 @@ class ChatService:
             new_conv = Conversation(
                 id=conv_id,
                 user_id=user_id,
-                title=request.message[:40] + ("..." if len(request.message) > 40 else "")
+                title=request.message[:60].strip()
             )
             await chat_repo.create_conversation(new_conv)
         else:
