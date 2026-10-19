@@ -308,6 +308,133 @@ code, pre {
   box-shadow: 0 4px 12px rgba(79, 70, 229, 0.35);
 }
 
+/* Sidebar Section Header */
+.sidebar-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 6px 4px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-dim);
+}
+
+.history-count-badge {
+  background: #e2e8f0;
+  color: var(--text-muted);
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 1px 7px;
+  border-radius: var(--radius-full);
+}
+
+/* Chat History List */
+.chat-history-list {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding-right: 4px;
+}
+
+.empty-history-notice {
+  text-align: center;
+  padding: 32px 12px;
+  color: var(--text-dim);
+  font-size: 0.82rem;
+}
+
+/* Clean Modern History Item */
+.history-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  height: 38px;
+  padding: 0 10px;
+  border-radius: 8px;
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--text-muted);
+  font-size: 0.82rem;
+  font-weight: 500;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+  box-sizing: border-box;
+  position: relative;
+  user-select: none;
+}
+
+.history-item:hover {
+  background: #f1f5f9;
+  color: var(--text-main);
+}
+
+.history-item.active {
+  background: #eef2ff;
+  color: var(--primary);
+  font-weight: 600;
+  border-color: #e0e7ff;
+}
+
+.history-icon {
+  color: var(--text-dim);
+  flex-shrink: 0;
+  transition: color 0.15s ease;
+}
+
+.history-item:hover .history-icon {
+  color: var(--primary-light);
+}
+
+.history-item.active .history-icon {
+  color: var(--primary);
+}
+
+.history-title {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+  display: block;
+}
+
+/* Delete Button - hidden until hover */
+.history-delete-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-dim);
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+}
+
+.history-item:hover .history-delete-btn {
+  opacity: 0.7;
+  visibility: visible;
+}
+
+.history-delete-btn:hover {
+  opacity: 1 !important;
+  color: #ef4444;
+  background: #fee2e2;
+}
+
 .floating-top-controls {
   position: absolute;
   top: 14px;
