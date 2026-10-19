@@ -10,8 +10,8 @@ STOPWORDS = {
     "required", "policy", "policies", "corporate", "regarding", "monthly", "personal", "rules", "requires",
     "that", "into", "from", "when", "where", "which", "available", "managers", "employees",
     "give", "need", "some", "info", "information", "tell", "me", "know", "learn", "details",
-    "want", "like", "would", "please", "find", "see", "look", "check", "ask", "help", "guidance",
-    "explain", "show", "guidelines", "procedure", "procedures"
+    "want", "like", "would", "could", "should", "will", "please", "find", "see", "look", "check", "ask", "help", "guidance",
+    "explain", "show", "guidelines", "procedure", "procedures", "you", "your", "yours", "they", "them", "their", "it", "its", "also"
 }
 
 def stem(w: str) -> str:
