@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Plus, PanelLeftClose, PanelLeft, Trash2 } from 'lucide-react';
+import { Plus, PanelLeftClose, PanelLeft, Trash2, MessageSquare, Sparkles } from 'lucide-react';
 import UserMessage from '../components/chat/UserMessage';
 import AIMessage from '../components/chat/AIMessage';
 import TypingIndicator from '../components/chat/TypingIndicator';
@@ -179,14 +179,17 @@ export default function Chat() {
           </button>
         </div>
 
-        <div style={{ fontSize: '0.72rem', textTransform: 'uppercase', color: 'var(--text-dim)', fontWeight: 700, padding: '0 4px', letterSpacing: '0.04em' }}>
-          History
+        <div className="sidebar-section-header">
+          <span>Recent Conversations</span>
+          <span className="history-count-badge">{conversations.length}</span>
         </div>
 
         <div className="chat-history-list">
           {conversations.length === 0 ? (
-            <div style={{ color: 'var(--text-dim)', fontSize: '0.82rem', textAlign: 'center', marginTop: '24px' }}>
-              No previous chats
+            <div className="empty-history-notice">
+              <MessageSquare size={20} style={{ opacity: 0.4, margin: '0 auto 8px' }} />
+              <div>No conversations yet</div>
+              <div style={{ fontSize: '0.74rem', opacity: 0.7, marginTop: '2px' }}>Start a new chat to begin</div>
             </div>
           ) : (
             conversations.map((c) => (
@@ -196,6 +199,7 @@ export default function Chat() {
                 className={`history-item ${currentConvId === c.id ? 'active' : ''}`}
                 title={c.title || 'Policy Discussion'}
               >
+                <MessageSquare size={15} className="history-icon" />
                 <span className="history-title">{c.title || 'Policy Discussion'}</span>
                 <button
                   type="button"
@@ -235,8 +239,65 @@ export default function Chat() {
 
         <div className="messages-viewport" ref={viewportRef}>
           {messages.length === 0 && !loading && (
-            <div style={{ margin: 'auto', textAlign: 'center', color: 'var(--text-dim)', fontSize: '0.9rem' }}>
-              Ask any question about company policies below to start a new chat.
+            <div className="empty-chat-hero">
+              <div className="hero-badge">
+                <Sparkles size={14} className="hero-sparkle" />
+                <span>Enterprise Verified Policy AI</span>
+              </div>
+              <h1 className="hero-title">How can I help with company policies?</h1>
+              <p className="hero-subtitle">
+                Accurate, point-wise policy guidance with instant source citations and strict zero-hallucination guardrails.
+              </p>
+
+              <div className="suggestion-cards-grid">
+                <button
+                  type="button"
+                  className="suggestion-card"
+                  onClick={() => handleSendMessage("How many vacation days do I earn per year, and how many can I carry over into next year?")}
+                >
+                  <div className="suggestion-top">
+                    <span className="suggestion-emoji">🌴</span>
+                    <span className="suggestion-tag">HR & Leave</span>
+                  </div>
+                  <div className="suggestion-text">How many vacation days do I earn per year and carryover rules?</div>
+                </button>
+
+                <button
+                  type="button"
+                  className="suggestion-card"
+                  onClick={() => handleSendMessage("What is the home office equipment stipend and monthly internet allowance for remote workers?")}
+                >
+                  <div className="suggestion-top">
+                    <span className="suggestion-emoji">🏡</span>
+                    <span className="suggestion-tag">Remote Work</span>
+                  </div>
+                  <div className="suggestion-text">Home office equipment stipend and monthly internet allowance</div>
+                </button>
+
+                <button
+                  type="button"
+                  className="suggestion-card"
+                  onClick={() => handleSendMessage("What is the daily meal per diem and hotel rate limit for business travel?")}
+                >
+                  <div className="suggestion-top">
+                    <span className="suggestion-emoji">✈️</span>
+                    <span className="suggestion-tag">Travel & Expenses</span>
+                  </div>
+                  <div className="suggestion-text">Daily meal per diem and hotel limits for business travel</div>
+                </button>
+
+                <button
+                  type="button"
+                  className="suggestion-card"
+                  onClick={() => handleSendMessage("Does the company offer a 401(k) match and education or tuition assistance?")}
+                >
+                  <div className="suggestion-top">
+                    <span className="suggestion-emoji">🎓</span>
+                    <span className="suggestion-tag">Benefits</span>
+                  </div>
+                  <div className="suggestion-text">401(k) company matching and annual tuition assistance</div>
+                </button>
+              </div>
             </div>
           )}
 

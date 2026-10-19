@@ -32,10 +32,20 @@ export default function ChatInput({ onSendMessage, disabled, inputRef }) {
           disabled={disabled}
           autoFocus
         />
-        <button type="submit" className="send-btn" disabled={!text.trim() || disabled}>
-          <Send size={18} />
+        <button
+          type="submit"
+          className="send-btn"
+          disabled={!text.trim() || disabled}
+          title="Send inquiry"
+        >
+          <Send size={16} />
         </button>
       </form>
+      <div className="input-subtext">
+        <span>🛡️ Grounded in active policies</span>
+        <span className="dot-separator">•</span>
+        <span>Strict anti-hallucination compliance guardrail</span>
+      </div>
     </div>
   );
 }
