@@ -78,7 +78,7 @@ class ChatService:
         logger.info(f"Invoking LangGraph Policy Agent for query: '{request.message}'")
         final_state = await policy_rag_agent.ainvoke(initial_state)
 
-        latency_ms = (time.perf_counter() - start_time) * 1000.0
+        latency_ms = round((time.perf_counter() - start_time) * 1000.0, 2)
 
         # 5. Format Output
         answer = final_state.get("answer", "")

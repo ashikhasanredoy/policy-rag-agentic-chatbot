@@ -12,7 +12,9 @@ export default function TraceTimeline({ trace, latencyMs }) {
         <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
           <Activity size={13} style={{ color: 'var(--primary-light)' }} />
           <span>Verification Trace</span>
-          <span style={{ fontSize: '0.75rem', color: 'var(--text-dim)', marginLeft: '4px' }}>({latencyMs} ms)</span>
+          <span style={{ fontSize: '0.75rem', color: 'var(--text-dim)', marginLeft: '4px' }}>
+            ({Number(latencyMs || 0).toFixed(2)} ms)
+          </span>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
           {trace.conflict_detected && (
