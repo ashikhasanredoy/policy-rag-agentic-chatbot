@@ -168,13 +168,14 @@ def policy_list_node(state: PolicyState) -> Dict[str, Any]:
     logger.info("Node [PolicyList]: Listing active policies")
     answer = (
         "Here are the active company policies currently indexed:\n\n"
-        "1. 📋 **Annual Leave and Absence Management Policy** (POL-HR-001)\n"
+        "1. 📋 **Comprehensive Annual Leave and Absence Management Policy** (POL-HR-001)\n"
         "2. 🏠 **Remote, Hybrid Workplace, and Telecommuting Policy** (POL-HR-002)\n"
-        "3. ✈️ **Business Travel, Expense Reimbursement, and Corporate Card Policy** (POL-FIN-003)\n"
-        "4. 🔒 **Information Security and Acceptable Use Policy** (POL-SEC-004)\n"
-        "5. 💻 **BYOD and IT Endpoint Security Policy** (POL-IT-005)\n"
-        "6. 🤝 **Code of Conduct, Ethics, and Anti-Harassment Policy** (POL-OPS-006)\n"
-        "7. 🎁 **Employee Benefits and Perks Policy** (POL-HR-007)\n\n"
+        "3. 🎁 **Employee Benefits, Compensation Structure, and Wellness Policy** (POL-HR-003)\n"
+        "4. ✈️ **Business Travel, Expense Reimbursement, and Corporate Card Policy** (POL-FIN-003)\n"
+        "5. 💻 **Bring Your Own Device (BYOD) and IT Endpoint Security Policy** (POL-IT-004)\n"
+        "6. 🔒 **Corporate Information Security and Access Control Policy** (POL-SEC-005)\n"
+        "7. 🤝 **Code of Business Conduct, Corporate Ethics, and Whistleblower Policy** (POL-OPS-006)\n"
+        "8. 🛡️ **Customer Data Privacy and Global Compliance (GDPR/CCPA) Policy** (POL-CUST-007)\n\n"
         "Feel free to ask any question regarding these policies!"
     )
     return {

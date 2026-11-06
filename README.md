@@ -270,21 +270,34 @@ python3 -m scripts.seed_database
 PYTHONPATH=. pytest backend/tests/ -v
 ```
 
-### 5. Start Backend Server
+### 5. Run Full Project (Unified Launcher)
 
+Start both backend and frontend concurrently with a single command:
+
+```bash
+python3 run.py
+```
+
+*Optional flags:*
+- `python3 run.py --open-browser`: Automatically open UI in browser when ready.
+- `python3 run.py --no-frontend`: Run backend only.
+- `python3 run.py --no-backend`: Run frontend only.
+
+### 6. Manual Start (Alternative)
+
+**Backend Server:**
 ```bash
 python3 -m uvicorn backend.app.main:app --host 127.0.0.1 --port 8000 --reload
 ```
 Interactive Swagger documentation available at: `http://127.0.0.1:8000/docs`
 
-### 6. Start Frontend Server
-
+**Frontend Server:**
 ```bash
 cd frontend
 npm install
 npm run dev
 ```
-Open `http://127.0.0.1:5173` in your browser.
+Open `http://localhost:5173` in your browser.
 
 ---
 

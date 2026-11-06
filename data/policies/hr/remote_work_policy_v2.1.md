@@ -1,66 +1,353 @@
 # Remote, Hybrid Workplace, and Telecommuting Policy
 
-**Document ID:** POL-HR-002  
-**Category:** Human Resources  
-**Department:** Global People & Culture  
-**Version:** 2.1  
-**Effective Date:** 2026-01-01  
-**Review Cycle:** Semi-Annual  
-**Status:** Active  
-**Applies To:** All Corporate, Technical, and Administrative Personnel  
+**Document ID:** POL-HR-002\
+**Category:** Human Resources\
+**Policy Owner:** Global People & Culture\
+**Responsible Functions:** HR, Department Managers, IT, Information
+Security, Payroll, Tax, Legal, Facilities\
+**Proposed Version:** 2.2 (enhanced draft)\
+**Source Version:** 2.1\
+**Proposed Effective Date:** Upon formal approval\
+**Review Cycle:** Semi-Annual and upon material legal, tax, security, or
+workplace changes\
+**Status:** Draft --- proposed enhanced revision; approval required
+before operational use\
+**Applies To:** Corporate, technical, and administrative personnel whose
+roles are approved for hybrid or remote work
 
----
+> **Implementation notice:** The source policy's hybrid schedule,
+> anchor-day allowance, probation restriction, core hours, response
+> target, stipends, equipment, security requirements, and geographic
+> limits are retained. Local wage-hour, health and safety, privacy, tax,
+> immigration, and workers' compensation rules must be reviewed before
+> applying this policy in each jurisdiction.
 
-## Section 1: Executive Overview and Objective
-1.1 **Purpose**: This policy establishes formal operational guidelines, eligibility criteria, cybersecurity requirements, financial allowances, and productivity standards for employees participating in hybrid and telecommuting arrangements.  
-1.2 **Philosophy**: The organization promotes a flexible workplace culture that balances individual flexibility with collaborative synergy, in-person teamwork, data confidentiality, and cross-functional performance.
+------------------------------------------------------------------------
 
----
+## 1. Purpose and Policy Principles
 
-## Section 2: Hybrid Work Schedules and Eligibility Tiers
-2.1 **Standard Hybrid Arrangement**: Eligible full-time permanent employees may work remotely **up to two (2) days per week**, with the remaining three (3) days performed on-site at their designated corporate office hub.  
-2.2 **Core Anchor Days**: Departments may establish up to two mandatory "Anchor Days" per week (e.g. Tuesdays and Thursdays) where all team members must be present in the office for sprint planning, all-hands meetings, and collaborative design sessions.  
-2.3 **Probationary Period Restrictions**: New hires during their initial ninety (90) day probationary period are expected to work on-site five (5) days per week to foster team assimilation, mentoring, and technical onboarding, unless an explicit contractual exemption was executed upon hiring.  
-2.4 **Full Remote Exceptions**: Full-time 100% remote arrangements are reserved for specialized roles designated by executive leadership and require Vice President of HR and Chief Operating Officer (COO) approval.
+1.1 This policy defines eligibility, scheduling, performance,
+communication, equipment, cybersecurity, tax, safety, and approval
+requirements for hybrid and remote work.
 
----
+1.2 Flexible work is a business arrangement, not an automatic
+entitlement. It must support service quality, collaboration,
+confidentiality, employee well-being, and measurable performance.
 
-## Section 3: Core Working Hours, Availability, and Communication Standards
-3.1 **Mandatory Core Collaboration Hours**: Regardless of working from home or in the office, all employees must be logged on, active, and responsive between **10:00 AM and 4:00 PM local time** in their assigned primary time zone.  
-3.2 **Communication Responsiveness**:
-- **Slack / Instant Messaging**: Acknowledge direct mentions within sixty (60) minutes during core business hours.
-- **Calendar Visibility**: Keep Google Calendar / Outlook up-to-date with current working status (e.g., "Working Remotely - Home", "In Office", "Focus Time - Do Not Disturb").
-- **Video Conferencing Protocol**: Cameras should remain on during team standups, customer presentations, and 1-on-1 supervisory sessions.
+1.3 Remote employees remain subject to applicable working hours,
+timekeeping, leave, conduct, confidentiality, and security policies.
 
----
+1.4 A remote arrangement may be modified or withdrawn for legitimate
+operational, performance, security, legal, or role-related reasons,
+subject to applicable law and the written agreement.
 
-## Section 4: Home Office Setup, Equipment Stipend, and Internet Subsidies
-4.1 **One-Time Home Ergonomic Stipend**: Approved hybrid and remote employees are eligible for a **one-time reimbursement of up to $500.00 USD** to equip their home workspace with ergonomic furniture (desk, ergonomic chair, external keyboard, mouse, or secondary monitor). Receipts must be submitted within sixty (60) days of onboarding through the Concur expense portal.  
-4.2 **Standard Company-Provided Hardware**: The IT department will directly provision:
-- One (1) corporate laptop (MacBook Pro or ThinkPad).
-- One (1) multi-port USB-C adapter/dock.
-- One (1) noise-canceling headset for video calls.  
-4.3 **Monthly Internet Connectivity Allowance**: Hybrid employees working under an approved remote agreement receive a flat monthly internet stipend of **$50.00 USD per month**, paid automatically through monthly payroll.  
-4.4 **Equipment Ownership**: All corporate-issued computing equipment remains company property and must be surrendered immediately upon separation of employment.
+## 2. Definitions
 
----
+-   **On-site work:** Work performed at the employee's designated office
+    or approved company location.
+-   **Remote work:** Work performed at an approved location other than
+    the designated office.
+-   **Hybrid work:** A scheduled combination of on-site and remote work.
+-   **Anchor day:** A designated day when team members are required to
+    attend the office for collaboration.
+-   **Core collaboration hours:** The common availability period
+    specified in this policy.
+-   **Primary work location:** The location and country/state recorded
+    in the employee's employment and tax records.
+-   **Remote-work agreement:** Written approval stating schedule,
+    location, equipment, security, duration, and conditions.
 
-## Section 5: Cybersecurity, Data Protection, and Physical Workspace Standards
-5.1 **Dedicated Workspace Requirement**: Remote work must be conducted in a secure, private, and quiet environment free from distractions. Working from public Wi-Fi without VPN is strictly prohibited.  
-5.2 **VPN and Screen Privacy**:
-- All network traffic to internal company databases, repositories, and SaaS tools must route through the Corporate Enterprise VPN (Zscaler / Cloudflare WARP).
-- Screens displaying confidential, proprietary, or customer Personally Identifiable Information (PII) must not be visible to third parties, household members, or visitors. Privacy filters must be used when working from authorized co-working spaces.  
-5.3 **No Unauthorized Third-Party Devices**: Family members, guests, or third parties are strictly prohibited from using or accessing corporate hardware.
+## 3. Eligibility and Work Arrangements
 
----
+### 3.1 Standard Hybrid Arrangement
 
-## Section 6: Global Remote Work, Travel Telecommuting, and Tax Compliance
-6.1 **Domestic Out-of-State Telecommuting**: Employees may work from an alternative domestic state for up to thirty (30) consecutive calendar days per year with direct manager pre-approval, provided the employee maintains primary tax residency at their contracted address.  
-6.2 **Strict International Remote Work Prohibition**: Working remotely from outside an employee's resident country of legal employment is **strictly prohibited without prior formal authorization from the Global Mobility, Tax, and Legal Compliance Directorate**.  
-6.3 **Tax Nexus and Legal Risk**: Unapproved international telecommuting exposes the company to permanent establishment tax liabilities, cross-border corporate tax penalties, and data export compliance breaches. Violations will result in disciplinary action up to immediate termination of employment.
+Eligible full-time permanent employees may work remotely up to **two (2)
+days per week**, with the remaining **three (3) days on-site** at their
+designated corporate office hub.
 
----
+### 3.2 Department Anchor Days
 
-## Section 7: Health, Safety, and Workplace Injury Protocols (Workers' Comp)
-7.1 **Workplace Ergonomics**: Employees are responsible for maintaining a safe, well-lit, and hazard-free home working area.  
-7.2 **Incident Notification**: In the unlikely event that an employee sustains a physical injury while performing authorized work duties within their home office during scheduled working hours, the incident must be reported to HR within twenty-four (24) hours for workers' compensation evaluation.
+Departments may establish up to **two mandatory Anchor Days per week**
+for sprint planning, all-hands meetings, design sessions, training,
+customer work, or other collaboration. Managers must communicate anchor
+days and any changes with reasonable notice.
+
+### 3.3 Probationary Employees
+
+During the initial **ninety (90) day probationary period**, new hires
+are expected to work on-site **five (5) days per week**, unless an
+explicit contractual exemption was executed at hiring or HR approves a
+lawful accommodation.
+
+### 3.4 Full Remote Exceptions
+
+A 100% remote arrangement is reserved for specialized roles designated
+by executive leadership and requires approval from the **Vice President
+of HR and Chief Operating Officer (COO)**.
+
+### 3.5 Role and Location Assessment
+
+Managers must consider role duties, customer coverage, data sensitivity,
+equipment, supervision, collaboration, and the employee's approved work
+location. Remote work may be denied where essential duties cannot be
+performed securely or effectively.
+
+### 3.6 Written Approval
+
+No employee may treat an informal conversation or occasional
+work-from-home day as approval for a permanent arrangement. HR must
+retain the approved schedule and location.
+
+## 4. Schedule, Working Time, and Availability
+
+### 4.1 Core Collaboration Hours
+
+Regardless of work location, employees must be available and responsive
+between **10:00 AM and 4:00 PM local time** in their assigned primary
+time zone, subject to approved breaks, leave, accommodations, and local
+working-time law.
+
+### 4.2 Working Hours and Overtime
+
+Core hours do not replace the employee's agreed daily or weekly
+schedule. Non-exempt/hourly employees must record all working time
+accurately and obtain required overtime approval. Managers must not
+request off-the-clock work or assume that remote employees are available
+outside their scheduled hours.
+
+### 4.3 Messaging Response
+
+Employees should acknowledge direct Slack or instant-message mentions
+within **sixty (60) minutes during core business hours**, unless they
+are in a meeting, on approved focus time, on break, on leave, or
+otherwise unavailable with status shown.
+
+### 4.4 Calendar and Status
+
+Employees must keep Google Calendar / Outlook current with working
+location and availability, using labels such as "Working Remotely -
+Home," "In Office," or "Focus Time - Do Not Disturb." Calendar details
+must not expose confidential personal or customer information.
+
+### 4.5 Video Meetings
+
+Cameras should remain on during team standups, customer presentations,
+and one-to-one supervisory sessions where practical. Employees may turn
+cameras off for bandwidth, accessibility, privacy, health, or other
+reasonable reasons and should notify the meeting host where appropriate.
+Camera use must comply with local privacy and accommodation
+requirements.
+
+### 4.6 Performance and Deliverables
+
+Managers must evaluate remote employees using role-related outcomes,
+quality, service levels, deadlines, collaboration, and conduct---not
+physical visibility alone. Expectations must be documented and applied
+consistently.
+
+## 5. Home Office, Equipment, and Allowances
+
+### 5.1 Ergonomic Stipend
+
+Approved hybrid and remote employees are eligible for a one-time
+reimbursement of up to **\$500 USD** for home-workspace ergonomic
+equipment, such as a desk, ergonomic chair, external keyboard, mouse, or
+secondary monitor.
+
+5.2 Receipts must be submitted within **sixty (60) days of onboarding**
+through the Concur expense portal. Items must be reasonable,
+work-related, and approved under the expense process.
+
+### 5.3 Company-Provided Hardware
+
+IT will provision the following standard equipment: - One (1) corporate
+laptop --- MacBook Pro or ThinkPad. - One (1) multi-port USB-C
+adapter/dock. - One (1) noise-canceling headset for video calls.
+
+Role-specific equipment requires IT assessment and manager approval.
+
+### 5.4 Internet Allowance
+
+Approved hybrid employees working under an approved remote agreement
+receive a flat internet stipend of **\$50 USD per month**, paid through
+monthly payroll. Payroll determines tax treatment in the relevant
+jurisdiction.
+
+### 5.5 Ownership and Care
+
+Company-issued equipment remains company property. Employees must
+protect it from loss, theft, damage, unauthorized access, and household
+use. Equipment must be surrendered immediately upon separation, or by
+the return deadline specified by HR/IT.
+
+### 5.6 Repairs and Support
+
+Employees must report malfunctioning or unsafe equipment through the IT
+service desk. They must not install unapproved hardware, repair
+corporate devices through unauthorized providers, or disable
+management/security controls.
+
+## 6. Cybersecurity and Physical Workspace
+
+### 6.1 Workspace
+
+Remote work must be performed in a secure, private, reasonably quiet,
+and hazard-free environment. Sensitive conversations must not be audible
+to unauthorized persons.
+
+### 6.2 Public Wi-Fi
+
+Working on public Wi-Fi without the approved corporate VPN is
+prohibited. Employees should use a trusted private network, secure
+hotspot, or another IT-approved connection.
+
+### 6.3 VPN and Access
+
+All traffic to internal databases, repositories, and SaaS tools must
+route through the Corporate Enterprise VPN (source examples: Zscaler /
+Cloudflare WARP) or an approved Zero Trust access solution. IT
+determines the approved configuration.
+
+### 6.4 Screen and Document Privacy
+
+Screens containing confidential, proprietary, or customer PII must not
+be visible to household members, visitors, or other unauthorized people.
+Privacy filters must be used in authorized co-working spaces where
+others could view the screen. Printed confidential materials must be
+secured and disposed of through approved shredding.
+
+### 6.5 Third-Party Access
+
+Family members, guests, and third parties must not use or access
+corporate hardware, accounts, or work sessions. Employees must lock
+devices when unattended.
+
+### 6.6 Incident Reporting
+
+Lost devices, suspected malware, accidental disclosure, suspicious login
+prompts, and other security incidents must be reported immediately under
+the Information Security and BYOD policies.
+
+## 7. Location, Travel, Tax, and Immigration Compliance
+
+### 7.1 Domestic Out-of-State Work
+
+Employees may work from an alternative domestic state for up to **thirty
+(30) consecutive calendar days per year** with direct-manager
+pre-approval, provided the employee maintains the primary tax residency
+recorded at the contracted address. This condition alone does not
+establish tax compliance; HR/Tax must review any location that may
+create payroll, tax, labor, insurance, or registration obligations.
+
+### 7.2 International Remote Work
+
+Working remotely from outside the employee's country of legal employment
+is **prohibited without prior formal authorization** from the Global
+Mobility, Tax, and Legal Compliance Directorate.
+
+### 7.3 Approval Assessment
+
+Before approving cross-border work, the company must assess
+immigration/work authorization, payroll withholding,
+permanent-establishment risk, social insurance, employment law, data
+residency/export restrictions, insurance, and security. Approval must
+state exact country, dates, duties, and conditions.
+
+### 7.4 No Unapproved Work Location
+
+Employees must not conceal their actual work location, use
+location-masking tools to bypass controls, or work from a restricted
+country or location without authorization.
+
+### 7.5 Violations
+
+Unapproved international telecommuting may create tax, immigration,
+corporate, and data-transfer risks and may result in disciplinary action
+up to termination, subject to investigation and applicable law.
+
+## 8. Health, Safety, and Workplace Injury
+
+8.1 Employees are responsible for maintaining a safe, well-lit,
+ergonomically appropriate, and hazard-free home work area.
+
+8.2 Employees should take reasonable breaks, maintain safe posture, and
+report equipment or environmental hazards.
+
+8.3 An injury sustained while performing authorized work duties in the
+home office during scheduled working hours must be reported to HR within
+**twenty-four (24) hours**, where practicable, for workers' compensation
+or local occupational-injury evaluation.
+
+8.4 HR must assess reporting and insurance obligations under the law of
+the employee's work location. Employees should seek emergency care
+immediately where needed and should not delay treatment to complete a
+report.
+
+## 9. Business Continuity and Service Availability
+
+9.1 Employees must maintain a reasonable backup plan for internet or
+power interruptions, such as notifying the manager, using an approved
+alternative connection, or attending the office where feasible.
+
+9.2 Employees must not use unapproved public devices or personal email
+to continue company work during an outage.
+
+9.3 Managers must define coverage and escalation arrangements for
+customer-facing and critical roles.
+
+## 10. Monitoring, Privacy, and Employee Data
+
+10.1 Any monitoring of remote work must be lawful, transparent,
+proportionate, and limited to legitimate business, security,
+timekeeping, or compliance purposes.
+
+10.2 The organization must not collect more personal information than
+necessary. Employees must receive notice of any monitoring tools and the
+categories of data collected.
+
+10.3 Productivity monitoring must not be used as the sole measure of
+performance without role-related context and human review.
+
+## 11. Changes, Suspension, and Separation
+
+11.1 Changes to schedule, location, role, or equipment require manager
+and HR review and updated written approval.
+
+11.2 The company may temporarily suspend remote work for security
+incidents, business continuity, performance, legal, or operational
+reasons, with HR review and appropriate notice.
+
+11.3 On separation, employees must return company property, transfer
+business records, remove company data from personal devices through
+approved MDM procedures, and preserve records subject to legal hold.
+
+## 12. Exceptions, Compliance, and Review
+
+12.1 Exceptions require written approval from HR and the relevant
+functional owner. International work requires the formal approvals in
+Section 7.
+
+12.2 Violations may result in withdrawal of remote-work privileges,
+retraining, access restrictions, or disciplinary action, subject to law
+and due process.
+
+12.3 HR reviews this policy every six months and after material legal,
+tax, security, or operational changes.
+
+## 13. Policy RAG and Interpretation Rules
+
+-   State the exact hybrid limit, core hours, response target, and
+    allowance amount.
+-   Do not treat hybrid eligibility as automatic for every role.
+-   Do not approve international work based only on manager permission.
+-   Do not assume that maintaining a tax residence removes all tax
+    obligations.
+-   Camera-on expectations are subject to reasonable exceptions and
+    local privacy/accommodation rules.
+-   If the work location or employee category is unknown, say **"HR,
+    Tax, and Legal must confirm eligibility for the employee's location
+    and role."**
+
+**Related policies:** BYOD and Endpoint Security Policy; Information
+Security Policy; Annual Leave Policy; Travel and Expense Policy;
+Employee Benefits Policy.

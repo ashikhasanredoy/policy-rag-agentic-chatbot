@@ -16,15 +16,15 @@ POLICIES_MANIFEST = [
         "name": "Comprehensive Annual Leave and Absence Management Policy",
         "category": "HR",
         "department": "Global People & Culture",
-        "version": "2.0",
-        "description": "20-day annual leave accrual (1.66 days/mo), 5-day carryover expiring March 31, parental leave (16 weeks maternity, 6 weeks paternity), sick leave, and bereavement."
+        "version": "2.1",
+        "description": "20-day annual leave accrual (1.67 days/mo), 5-day carryover expiring March 31, parental leave (16 weeks maternity, 6 weeks paternity), sick leave, and bereavement."
     },
     {
         "file": "data/policies/hr/remote_work_policy_v2.1.md",
         "name": "Remote, Hybrid Workplace, and Telecommuting Policy",
         "category": "HR",
         "department": "Global People & Culture",
-        "version": "2.1",
+        "version": "2.2",
         "description": "Hybrid schedule up to 2 days/week, core hours (10 AM - 4 PM), $500 home office ergonomic stipend, $50/mo internet allowance, and international telecommuting limits."
     },
     {
@@ -32,7 +32,7 @@ POLICIES_MANIFEST = [
         "name": "Employee Benefits, Compensation Structure, and Wellness Policy",
         "category": "HR",
         "department": "Global Total Rewards & Benefits",
-        "version": "2.0",
+        "version": "2.1",
         "description": "Medical/Dental/Vision plans, 401(k) 50% match up to 6% salary, $5,250 annual tuition assistance, 2x salary life insurance, STD/LTD, and $75/mo gym fitness subsidy."
     },
     {
@@ -40,7 +40,7 @@ POLICIES_MANIFEST = [
         "name": "Business Travel, Expense Reimbursement, and Corporate Card Policy",
         "category": "Finance",
         "department": "Global Finance, Accounting & Procurement",
-        "version": "3.0",
+        "version": "3.1",
         "description": "Daily meal per diem ($75 max), hotel limits ($200 std / $280 Tier-1), flights under 5 hrs in economy, 30-day Concur submission deadline, and mileage ($0.67/mi)."
     },
     {
@@ -48,7 +48,7 @@ POLICIES_MANIFEST = [
         "name": "Bring Your Own Device (BYOD) and IT Endpoint Security Policy",
         "category": "IT",
         "department": "Global Information Technology & Infrastructure",
-        "version": "1.5",
+        "version": "1.6",
         "description": "Mobile MDM enrollment, 6-digit PIN / biometric lock, 3-year laptop refresh cycles, 2-hour lost device reporting SLA, and remote wipe protocols."
     },
     {
@@ -56,7 +56,7 @@ POLICIES_MANIFEST = [
         "name": "Corporate Information Security and Access Control Policy",
         "category": "Security",
         "department": "Global Information Security & Compliance",
-        "version": "2.0",
+        "version": "2.1",
         "description": "SOC2/ISO27001 data classification (Tiers 1-4), 14-char password complexity, mandatory FIDO2 hardware MFA, AES-256 / TLS 1.3 encryption, and incident response matrix."
     },
     {
@@ -64,7 +64,7 @@ POLICIES_MANIFEST = [
         "name": "Code of Business Conduct, Corporate Ethics, and Whistleblower Policy",
         "category": "Operations",
         "department": "Legal, Compliance & Executive Ethics",
-        "version": "1.0",
+        "version": "1.1",
         "description": "FCPA anti-bribery standards, gift limits ($100 cap), outside activity disclosures, insider trading rules, and 24/7 confidential ethics reporting hotline."
     },
     {
@@ -72,7 +72,7 @@ POLICIES_MANIFEST = [
         "name": "Customer Data Privacy and Global Compliance (GDPR/CCPA) Policy",
         "category": "Customer",
         "department": "Data Privacy, Legal & Security Office",
-        "version": "2.0",
+        "version": "2.1",
         "description": "GDPR/CCPA customer rights (Access, Erasure, Portability), 30-day DSAR response SLA, 7-year financial record retention, and Standard Contractual Clauses (SCCs)."
     }
 ]

@@ -84,7 +84,15 @@ class IngestionService:
 
         logger.info(f"Generated {len(chunks)} chunks for policy '{name}' (v{version})")
 
-        # 5. Index into Qdrant
+        # 5. Index into Qdrant (remove old vectors for this policy first if existing)
+        if existing_policy:
+            qdrant_store.delete_by_policy_id(policy.id)
+            global ALL_CHUNKS_REGISTRY
+            ALL_CHUNKS_REGISTRY = [
+                c for c in ALL_CHUNKS_REGISTRY 
+                if c.get("metadata", {}).get("policy_id") != policy.id
+            ]
+
         qdrant_store.upsert_chunks(chunks)
 
         # 6. Update BM25 Index
