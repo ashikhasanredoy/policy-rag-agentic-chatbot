@@ -1,0 +1,494 @@
+{
+  "summary": {
+    "total_test_questions": 30,
+    "precision_at_3": 0.95,
+    "precision_at_5": 0.95,
+    "recall_at_3": 0.8944,
+    "recall_at_5": 0.8944,
+    "mrr": 0.95,
+    "ndcg_at_5": 0.9544,
+    "citation_accuracy": 0.9467,
+    "answer_faithfulness": 1.0,
+    "unsupported_claim_rate": 0.0,
+    "cross_policy_contamination_rate": 0.0
+  },
+  "details": [
+    {
+      "id": "Q01",
+      "category": "Exact Policy ID",
+      "question": "What is FIN-002?",
+      "ground_truth": [
+        "FIN-002"
+      ],
+      "retrieved": [
+        "FIN-002"
+      ],
+      "precision@3": 1.0,
+      "recall@3": 1.0,
+      "mrr": 1.0,
+      "latency_ms": 2158.0,
+      "status": "PASS"
+    },
+    {
+      "id": "Q02",
+      "category": "Exact Policy ID",
+      "question": "What are the mandatory requirements of HR-003?",
+      "ground_truth": [
+        "HR-003"
+      ],
+      "retrieved": [
+        "HR-003"
+      ],
+      "precision@3": 1.0,
+      "recall@3": 1.0,
+      "mrr": 1.0,
+      "latency_ms": 91.3,
+      "status": "PASS"
+    },
+    {
+      "id": "Q03",
+      "category": "Exact Policy ID",
+      "question": "Explain the operating procedure of IT-002.",
+      "ground_truth": [
+        "IT-002"
+      ],
+      "retrieved": [
+        "IT-002"
+      ],
+      "precision@3": 1.0,
+      "recall@3": 1.0,
+      "mrr": 1.0,
+      "latency_ms": 106.3,
+      "status": "PASS"
+    },
+    {
+      "id": "Q04",
+      "category": "Exact Policy ID",
+      "question": "What is covered under LEG-001?",
+      "ground_truth": [
+        "LEG-001"
+      ],
+      "retrieved": [
+        "LEG-001"
+      ],
+      "precision@3": 1.0,
+      "recall@3": 1.0,
+      "mrr": 1.0,
+      "latency_ms": 79.9,
+      "status": "PASS"
+    },
+    {
+      "id": "Q05",
+      "category": "Policy Title",
+      "question": "What is the procedure for employee expense reimbursement?",
+      "ground_truth": [
+        "FIN-002"
+      ],
+      "retrieved": [
+        "FIN-002"
+      ],
+      "precision@3": 1.0,
+      "recall@3": 1.0,
+      "mrr": 1.0,
+      "latency_ms": 227.6,
+      "status": "PASS"
+    },
+    {
+      "id": "Q06",
+      "category": "Policy Title",
+      "question": "How can an employee apply for leave under the leave management policy?",
+      "ground_truth": [
+        "HR-003"
+      ],
+      "retrieved": [
+        "HR-003"
+      ],
+      "precision@3": 1.0,
+      "recall@3": 1.0,
+      "mrr": 1.0,
+      "latency_ms": 335.2,
+      "status": "PASS"
+    },
+    {
+      "id": "Q07",
+      "category": "Policy Title",
+      "question": "What are the rules regarding password and authentication?",
+      "ground_truth": [
+        "IT-003"
+      ],
+      "retrieved": [
+        "IT-003"
+      ],
+      "precision@3": 1.0,
+      "recall@3": 1.0,
+      "mrr": 1.0,
+      "latency_ms": 322.3,
+      "status": "PASS"
+    },
+    {
+      "id": "Q08",
+      "category": "Policy Title",
+      "question": "What is the operational process for business continuity?",
+      "ground_truth": [
+        "OPS-001"
+      ],
+      "retrieved": [
+        "OPS-001"
+      ],
+      "precision@3": 1.0,
+      "recall@3": 1.0,
+      "mrr": 1.0,
+      "latency_ms": 326.3,
+      "status": "PASS"
+    },
+    {
+      "id": "Q09",
+      "category": "Policy Title",
+      "question": "What is the procedure for security incident reporting?",
+      "ground_truth": [
+        "SEC-002"
+      ],
+      "retrieved": [
+        "SEC-002"
+      ],
+      "precision@3": 1.0,
+      "recall@3": 1.0,
+      "mrr": 1.0,
+      "latency_ms": 301.3,
+      "status": "PASS"
+    },
+    {
+      "id": "Q10",
+      "category": "Policy Title",
+      "question": "How should competitive bidding be conducted in procurement?",
+      "ground_truth": [
+        "PROC-003"
+      ],
+      "retrieved": [
+        "PROC-003"
+      ],
+      "precision@3": 1.0,
+      "recall@3": 1.0,
+      "mrr": 1.0,
+      "latency_ms": 257.6,
+      "status": "PASS"
+    },
+    {
+      "id": "Q11",
+      "category": "Semantic",
+      "question": "What happens when an employee violates the code of conduct?",
+      "ground_truth": [
+        "HR-001"
+      ],
+      "retrieved": [
+        "HR-001"
+      ],
+      "precision@3": 1.0,
+      "recall@3": 1.0,
+      "mrr": 1.0,
+      "latency_ms": 366.7,
+      "status": "PASS"
+    },
+    {
+      "id": "Q12",
+      "category": "Semantic",
+      "question": "How does the company grant and revoke system access?",
+      "ground_truth": [
+        "IT-002"
+      ],
+      "retrieved": [
+        "IT-002"
+      ],
+      "precision@3": 1.0,
+      "recall@3": 1.0,
+      "mrr": 1.0,
+      "latency_ms": 268.2,
+      "status": "PASS"
+    },
+    {
+      "id": "Q13",
+      "category": "Semantic",
+      "question": "Who can approve financial delegation of authority limits?",
+      "ground_truth": [
+        "FIN-012"
+      ],
+      "retrieved": [
+        "FIN-012"
+      ],
+      "precision@3": 1.0,
+      "recall@3": 1.0,
+      "mrr": 1.0,
+      "latency_ms": 248.4,
+      "status": "PASS"
+    },
+    {
+      "id": "Q14",
+      "category": "Semantic",
+      "question": "What are the rules regarding customer discount approvals and pricing?",
+      "ground_truth": [
+        "SALES-004"
+      ],
+      "retrieved": [
+        "SALES-004"
+      ],
+      "precision@3": 1.0,
+      "recall@3": 1.0,
+      "mrr": 1.0,
+      "latency_ms": 271.9,
+      "status": "PASS"
+    },
+    {
+      "id": "Q15",
+      "category": "Semantic",
+      "question": "What is the approval process for advertising and marketing claims?",
+      "ground_truth": [
+        "MKT-002",
+        "MKT-003"
+      ],
+      "retrieved": [
+        "MKT-002"
+      ],
+      "precision@3": 1.0,
+      "recall@3": 0.5,
+      "mrr": 1.0,
+      "latency_ms": 263.4,
+      "status": "PASS"
+    },
+    {
+      "id": "Q16",
+      "category": "Semantic",
+      "question": "How does the organization govern AI use and corporate ethics?",
+      "ground_truth": [
+        "GOV-009"
+      ],
+      "retrieved": [
+        "GOV-009"
+      ],
+      "precision@3": 1.0,
+      "recall@3": 1.0,
+      "mrr": 1.0,
+      "latency_ms": 396.6,
+      "status": "PASS"
+    },
+    {
+      "id": "Q17",
+      "category": "Semantic",
+      "question": "What protections are provided to employees reporting violations under whistleblower rules?",
+      "ground_truth": [
+        "LEG-004"
+      ],
+      "retrieved": [
+        "LEG-004"
+      ],
+      "precision@3": 1.0,
+      "recall@3": 1.0,
+      "mrr": 1.0,
+      "latency_ms": 375.1,
+      "status": "PASS"
+    },
+    {
+      "id": "Q18",
+      "category": "Bangla",
+      "question": "একজন কর্মচারী কীভাবে ছুটির আবেদন করতে পারে?",
+      "ground_truth": [
+        "HR-003"
+      ],
+      "retrieved": [
+        "HR-003"
+      ],
+      "precision@3": 1.0,
+      "recall@3": 1.0,
+      "mrr": 1.0,
+      "latency_ms": 273.0,
+      "status": "PASS"
+    },
+    {
+      "id": "Q19",
+      "category": "Bangla",
+      "question": "কর্মচারী অসদাচরণ করলে কী ধরনের ব্যবস্থা নেওয়া যায়?",
+      "ground_truth": [
+        "HR-001",
+        "HR-014"
+      ],
+      "retrieved": [
+        "HR-014"
+      ],
+      "precision@3": 1.0,
+      "recall@3": 0.5,
+      "mrr": 1.0,
+      "latency_ms": 596.5,
+      "status": "PASS"
+    },
+    {
+      "id": "Q20",
+      "category": "Bangla",
+      "question": "ব্যয় প্রতিদানের নিয়ম এবং অনুমোদন পদ্ধতি কী?",
+      "ground_truth": [
+        "FIN-002"
+      ],
+      "retrieved": [
+        "FIN-002"
+      ],
+      "precision@3": 1.0,
+      "recall@3": 1.0,
+      "mrr": 1.0,
+      "latency_ms": 587.4,
+      "status": "PASS"
+    },
+    {
+      "id": "Q21",
+      "category": "Bangla",
+      "question": "Explain the Finance Department's reimbursement procedure in Bangla.",
+      "ground_truth": [
+        "FIN-002"
+      ],
+      "retrieved": [
+        "FIN-002"
+      ],
+      "precision@3": 1.0,
+      "recall@3": 1.0,
+      "mrr": 1.0,
+      "latency_ms": 435.5,
+      "status": "PASS"
+    },
+    {
+      "id": "Q22",
+      "category": "Bangla",
+      "question": "কর্মক্ষেত্রে নিরাপত্তা ঘটনা ঘটলে কীভাবে রিপোর্ট করতে হবে?",
+      "ground_truth": [
+        "SEC-002"
+      ],
+      "retrieved": [
+        "SEC-002"
+      ],
+      "precision@3": 1.0,
+      "recall@3": 1.0,
+      "mrr": 1.0,
+      "latency_ms": 519.5,
+      "status": "PASS"
+    },
+    {
+      "id": "Q23",
+      "category": "Cross-Policy",
+      "question": "Compare the employee grievance policy with the whistleblower protection policy.",
+      "ground_truth": [
+        "HR-013",
+        "LEG-004"
+      ],
+      "retrieved": [
+        "LEG-004"
+      ],
+      "precision@3": 1.0,
+      "recall@3": 0.5,
+      "mrr": 1.0,
+      "latency_ms": 849.6,
+      "status": "PASS"
+    },
+    {
+      "id": "Q24",
+      "category": "Cross-Policy",
+      "question": "How do travel expense reimbursement rules relate to general corporate procurement spend approval?",
+      "ground_truth": [
+        "FIN-014",
+        "FIN-011",
+        "PROC-004"
+      ],
+      "retrieved": [
+        "FIN-002",
+        "FIN-011"
+      ],
+      "precision@3": 0.5,
+      "recall@3": 0.33,
+      "mrr": 0.5,
+      "latency_ms": 890.2,
+      "status": "PASS"
+    },
+    {
+      "id": "Q25",
+      "category": "Cross-Policy",
+      "question": "What is the relationship between physical access security and information technology endpoint device security?",
+      "ground_truth": [
+        "OPS-010",
+        "SEC-001",
+        "IT-004"
+      ],
+      "retrieved": [
+        "SEC-002",
+        "SEC-008",
+        "SEC-010",
+        "SEC-013"
+      ],
+      "precision@3": 0.0,
+      "recall@3": 0.0,
+      "mrr": 0.0,
+      "latency_ms": 542.1,
+      "status": "FAIL"
+    },
+    {
+      "id": "Q26",
+      "category": "Specific Section",
+      "question": "What records and evidence must be retained under FIN-002 Section 7?",
+      "ground_truth": [
+        "FIN-002"
+      ],
+      "retrieved": [
+        "FIN-002"
+      ],
+      "precision@3": 1.0,
+      "recall@3": 1.0,
+      "mrr": 1.0,
+      "latency_ms": 187.1,
+      "status": "PASS"
+    },
+    {
+      "id": "Q27",
+      "category": "Specific Section",
+      "question": "Who are the designated authorities under HR-003 Section 6?",
+      "ground_truth": [
+        "HR-003"
+      ],
+      "retrieved": [
+        "HR-003"
+      ],
+      "precision@3": 1.0,
+      "recall@3": 1.0,
+      "mrr": 1.0,
+      "latency_ms": 204.1,
+      "status": "PASS"
+    },
+    {
+      "id": "Q28",
+      "category": "Specific Section",
+      "question": "What are the monitoring and assurance requirements in IT-002 Section 8?",
+      "ground_truth": [
+        "IT-002"
+      ],
+      "retrieved": [
+        "IT-002"
+      ],
+      "precision@3": 1.0,
+      "recall@3": 1.0,
+      "mrr": 1.0,
+      "latency_ms": 234.5,
+      "status": "PASS"
+    },
+    {
+      "id": "Q29",
+      "category": "Unanswerable",
+      "question": "Does the company provide a $5,000 cash subsidy for employee private submarine tours?",
+      "answerable": false,
+      "status": "PASS",
+      "retrieved": [],
+      "latency_ms": 787.9
+    },
+    {
+      "id": "Q30",
+      "category": "Unanswerable",
+      "question": "What is the official procedure for launching orbital spacecraft from headquarters?",
+      "answerable": false,
+      "status": "PASS",
+      "retrieved": [],
+      "latency_ms": 603.1
+    }
+  ]
+}
