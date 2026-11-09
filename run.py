@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """
-Enterprise Policy RAG System - Unified Launcher
+Enterprise Policy RAG System - Unified Application Launcher
 Runs both the FastAPI backend and React (Vite) frontend concurrently.
+Provides auto-prerequisite validation, health probing, and clean shutdown.
 """
 
 import os
@@ -10,6 +11,7 @@ import time
 import socket
 import signal
 import shutil
+import urllib.request
 import argparse
 import webbrowser
 import subprocess
@@ -19,6 +21,10 @@ from pathlib import Path
 PROJECT_ROOT = Path(__file__).resolve().parent
 FRONTEND_DIR = PROJECT_ROOT / "frontend"
 BACKEND_DIR = PROJECT_ROOT / "backend"
+ENV_FILE = PROJECT_ROOT / ".env"
+ENV_EXAMPLE = PROJECT_ROOT / ".env.example"
+CHROMA_DIR = PROJECT_ROOT / "vectorstore" / "chroma_db"
+PARENT_SECTIONS_FILE = PROJECT_ROOT / "processed" / "parent_sections.json"
 
 # Default configuration
 BACKEND_HOST = "127.0.0.1"
@@ -30,39 +36,59 @@ _extra_paths = [
     Path.home() / ".pyenv/shims",
     Path("/usr/local/bin"),
     Path("/opt/homebrew/bin"),
+    Path.home() / ".nvm/versions/node/current/bin",
 ]
 for p in _extra_paths:
     p_str = str(p)
     if p.exists() and p_str not in os.environ.get("PATH", ""):
         os.environ["PATH"] = f"{p_str}:{os.environ.get('PATH', '')}"
 
-# Process references for clean shutdown
+# Active process references for graceful termination
 processes = []
 
 
 def is_port_in_use(port: int, host: str = "127.0.0.1") -> bool:
-    """Check if a local port is already in use."""
+    """Checks whether a local TCP port is already bound."""
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-        s.settimeout(1.0)
+        s.settimeout(0.8)
         return s.connect_ex((host, port)) == 0
 
 
+def ensure_environment_file():
+    """Ensures .env exists; copies from .env.example if absent."""
+    if not ENV_FILE.exists() and ENV_EXAMPLE.exists():
+        print("📄 Initializing .env configuration from .env.example...")
+        shutil.copy2(ENV_EXAMPLE, ENV_FILE)
+
+
 def check_prerequisites(skip_frontend: bool = False):
-    """Verify required tools and dependencies are installed."""
+    """Verifies core Python dependencies, Node.js, and index assets."""
     print("🔍 Checking prerequisites...")
 
-    # Python dependencies check
-    try:
-        import fastapi
-        import uvicorn
-        import langgraph
-        import qdrant_client
-    except ImportError as e:
-        print(f"\n❌ Missing required Python package: {e.name}")
-        print(f"👉 Please install dependencies: pip install -r backend/requirements.txt\n")
+    # 1. Python core package validation
+    required_packages = [
+        ("fastapi", "fastapi"),
+        ("uvicorn", "uvicorn"),
+        ("langgraph", "langgraph"),
+        ("chromadb", "chromadb"),
+        ("rank_bm25", "rank-bm25"),
+        ("sqlalchemy", "sqlalchemy"),
+        ("pydantic", "pydantic"),
+    ]
+
+    missing = []
+    for import_name, pkg_name in required_packages:
+        try:
+            __import__(import_name)
+        except ImportError:
+            missing.append(pkg_name)
+
+    if missing:
+        print(f"\n❌ Missing required Python package(s): {', '.join(missing)}")
+        print("👉 Please install dependencies: pip install -r requirements.txt\n")
         sys.exit(1)
 
-    # Node / npm check
+    # 2. Node.js & npm validation
     if not skip_frontend:
         npm_path = shutil.which("npm")
         if not npm_path:
@@ -70,25 +96,59 @@ def check_prerequisites(skip_frontend: bool = False):
             print("👉 Please install Node.js (v18+) from https://nodejs.org/\n")
             sys.exit(1)
 
-        # Check frontend node_modules
+        # Ensure frontend dependencies are installed
         node_modules = FRONTEND_DIR / "node_modules"
         if not node_modules.exists():
-            print("📦 Installing frontend dependencies (npm install)...")
+            print("📦 Installing frontend dependencies (npm install in frontend/)...")
             res = subprocess.run([npm_path, "install"], cwd=FRONTEND_DIR)
             if res.returncode != 0:
                 print("❌ 'npm install' failed. Please resolve npm dependencies and try again.")
                 sys.exit(1)
 
-    print("✅ Prerequisites verified successfully.\n")
+    # 3. Knowledge base & index readiness check
+    if not CHROMA_DIR.exists() or not PARENT_SECTIONS_FILE.exists():
+        print("🏛️  Pre-indexing 150 enterprise policy documents into ChromaDB...")
+        ingest_script = PROJECT_ROOT / "scripts" / "ingest_markdown_policies.py"
+        if ingest_script.exists():
+            res = subprocess.run([sys.executable, str(ingest_script)], cwd=PROJECT_ROOT)
+            if res.returncode != 0:
+                print("⚠️  Initial ingestion finished with non-zero exit code. Continuing...")
+
+    print("✅ All prerequisites and dependencies verified.\n")
+
+
+def wait_for_backend(host: str, port: int, timeout: float = 20.0) -> bool:
+    """Polls the backend health endpoint until it returns HTTP 200."""
+    url = f"http://{host}:{port}/api/v1/health/"
+    start_time = time.time()
+    while time.time() - start_time < timeout:
+        try:
+            req = urllib.request.Request(url, headers={"User-Agent": "RunLauncher/1.0"})
+            with urllib.request.urlopen(req, timeout=1.5) as resp:
+                if resp.status == 200:
+                    return True
+        except Exception:
+            pass
+        time.sleep(0.5)
+    return False
+
+
+def wait_for_port(port: int, host: str = "127.0.0.1", timeout: float = 15.0) -> bool:
+    """Polls until a local TCP port is bound and accepting connections."""
+    start_time = time.time()
+    while time.time() - start_time < timeout:
+        if is_port_in_use(port, host):
+            return True
+        time.sleep(0.3)
+    return False
 
 
 def shutdown_processes(signum=None, frame=None):
-    """Gracefully terminate all spawned background processes."""
+    """Gracefully terminates all spawned background processes."""
     print("\n🛑 Shutting down Enterprise Policy RAG services...")
     for p in processes:
         if p.poll() is None:
             try:
-                # Terminate the process group to kill child processes (e.g. node spawned by npm)
                 if sys.platform != "win32":
                     os.killpg(os.getpgid(p.pid), signal.SIGTERM)
                 else:
@@ -99,7 +159,6 @@ def shutdown_processes(signum=None, frame=None):
                 except Exception:
                     pass
 
-    # Wait for processes to exit
     for p in processes:
         try:
             p.wait(timeout=3)
@@ -140,9 +199,24 @@ def main():
         help=f"Backend port (default: {BACKEND_PORT})",
     )
     parser.add_argument(
+        "--frontend-port",
+        type=int,
+        default=FRONTEND_PORT,
+        help=f"Frontend port (default: {FRONTEND_PORT})",
+    )
+    parser.add_argument(
         "--open-browser",
+        "--browser",
+        dest="open_browser",
         action="store_true",
+        default=False,
         help="Open the frontend in your default browser once ready",
+    )
+    parser.add_argument(
+        "--no-browser",
+        dest="open_browser",
+        action="store_false",
+        help="Do not open the browser automatically",
     )
     args = parser.parse_args()
 
@@ -150,49 +224,56 @@ def main():
     signal.signal(signal.SIGINT, shutdown_processes)
     signal.signal(signal.SIGTERM, shutdown_processes)
 
-    print("=" * 65)
-    print("🛡️  Enterprise Policy RAG + Agentic AI Assistant")
-    print("=" * 65)
+    print("=" * 70)
+    print("🛡️  Enterprise Policy Hybrid RAG Retrieval System (150 Policies)")
+    print("=" * 70)
 
+    ensure_environment_file()
     check_prerequisites(skip_frontend=args.no_frontend)
 
-    # Port availability check
-    if not args.no_backend and is_port_in_use(args.backend_port, args.host):
-        print(f"⚠️  Warning: Port {args.backend_port} is already in use.")
-        print(f"👉 Ensure no other instance is running, or specify --backend-port <port>.\n")
-
-    if not args.no_frontend and is_port_in_use(FRONTEND_PORT):
-        print(f"ℹ️  Note: Port {FRONTEND_PORT} is in use. Vite will automatically choose the next free port.\n")
-
-    # Start Backend
+    # 1. Start Backend Server
     if not args.no_backend:
-        print(f"🚀 Starting Backend server on http://{args.host}:{args.backend_port}...")
-        backend_cmd = [
-            sys.executable,
-            "-m",
-            "uvicorn",
-            "backend.app.main:app",
-            "--host",
-            args.host,
-            "--port",
-            str(args.backend_port),
-            "--reload",
-        ]
-        
-        # Start in new process group for clean termination
-        backend_proc = subprocess.Popen(
-            backend_cmd,
-            cwd=PROJECT_ROOT,
-            preexec_fn=os.setsid if sys.platform != "win32" else None,
-        )
-        processes.append(backend_proc)
+        if is_port_in_use(args.backend_port, args.host):
+            # Check if an existing backend instance is already healthy
+            if wait_for_backend(args.host, args.backend_port, timeout=1.0):
+                print(f"ℹ️  Backend already running and healthy on http://{args.host}:{args.backend_port}")
+            else:
+                print(f"⚠️  Port {args.backend_port} is in use by another process.")
+        else:
+            print(f"🚀 Starting FastAPI backend on http://{args.host}:{args.backend_port}...")
+            backend_cmd = [
+                sys.executable,
+                "-m",
+                "uvicorn",
+                "backend.app.main:app",
+                "--host",
+                args.host,
+                "--port",
+                str(args.backend_port),
+                "--reload",
+            ]
+            backend_proc = subprocess.Popen(
+                backend_cmd,
+                cwd=PROJECT_ROOT,
+                preexec_fn=os.setsid if sys.platform != "win32" else None,
+            )
+            processes.append(backend_proc)
 
-    # Start Frontend
+            # Health-check probe
+            print("⏳ Waiting for backend API to be ready...")
+            if wait_for_backend(args.host, args.backend_port, timeout=20.0):
+                print(f"✅ Backend API is healthy and accepting requests.")
+            else:
+                print(f"⚠️  Backend startup taking longer than expected. Continuing...")
+
+    # 2. Start Frontend Server
     if not args.no_frontend:
         npm_bin = shutil.which("npm") or "npm"
-        print(f"🎨 Starting Frontend UI (Vite dev server)...")
+        if is_port_in_use(args.frontend_port):
+            print(f"ℹ️  Port {args.frontend_port} is busy. Vite will select the next available port.")
+
+        print(f"🎨 Starting React frontend dev server (Vite)...")
         frontend_cmd = [npm_bin, "run", "dev"]
-        
         frontend_proc = subprocess.Popen(
             frontend_cmd,
             cwd=FRONTEND_DIR,
@@ -200,23 +281,26 @@ def main():
         )
         processes.append(frontend_proc)
 
-    # Brief delay for servers to bind
-    time.sleep(2)
+        # Wait for frontend port
+        wait_for_port(args.frontend_port, timeout=10.0)
 
-    print("\n" + "=" * 65)
-    print("✨ Services are running!")
+    # 3. Display Connection Summary
+    print("\n" + "=" * 70)
+    print("✨ Enterprise Policy RAG Services are Running!")
+    print("=" * 70)
     if not args.no_frontend:
-        print(f"   🌐 Frontend UI:        http://localhost:{FRONTEND_PORT}")
+        print(f"   🌐 Web Chat Interface: http://localhost:{args.frontend_port}")
     if not args.no_backend:
-        print(f"   ⚙️  Backend API:        http://{args.host}:{args.backend_port}")
-        print(f"   📚 Swagger Docs:       http://{args.host}:{args.backend_port}/docs")
-    print("=" * 65)
+        print(f"   ⚙️  Backend REST API:   http://{args.host}:{args.backend_port}")
+        print(f"   📚 Interactive Docs:   http://{args.host}:{args.backend_port}/docs")
+    print("=" * 70)
     print("Press [Ctrl+C] to stop all services.\n")
 
+    # 4. Open Browser if requested
     if args.open_browser and not args.no_frontend:
-        webbrowser.open(f"http://localhost:{FRONTEND_PORT}")
+        webbrowser.open(f"http://localhost:{args.frontend_port}")
 
-    # Keep script alive and monitor process health
+    # 5. Monitor Process Health
     try:
         while True:
             time.sleep(1)
@@ -231,4 +315,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
