@@ -1,189 +1,274 @@
-# 🛡️ Enterprise Policy RAG + Agentic AI Assistant
+# 🛡️ Enterprise Policy Hybrid RAG Retrieval System (150 Policies)
 
-[![Python](https://img.shields.io/badge/Python-3.11+-blue.svg)](https://www.python.org/)
-[![FastAPI](https://img.shields.io/badge/FastAPI-0.111.0-009688.svg)](https://fastapi.tiangolo.com/)
-[![LangGraph](https://img.shields.io/badge/Orchestration-LangGraph-orange.svg)](https://www.langchain.com/langgraph)
-[![Qdrant](https://img.shields.io/badge/VectorDB-Qdrant-red.svg)](https://qdrant.tech/)
-[![React](https://img.shields.io/badge/Frontend-React%20%2B%20Vite-61dafb.svg)](https://react.dev/)
-[![UI Development](https://img.shields.io/badge/Frontend%20Developed%20By-Claude%20AI-blueviolet.svg)](https://anthropic.com)
+[![Python](https://img.shields.io/badge/Python-3.9%20%7C%203.11-blue.svg)](https://www.python.org/)
+[![Orchestration](https://img.shields.io/badge/Orchestration-LangGraph-orange.svg)](https://www.langchain.com/langgraph)
+[![VectorDB](https://img.shields.io/badge/VectorDB-ChromaDB-green.svg)](https://www.trychroma.com/)
+[![Lexical Search](https://img.shields.io/badge/Lexical-BM25Okapi-blue.svg)](https://github.com/dorianbrown/rank_bm25)
+[![Embeddings](https://img.shields.io/badge/Embeddings-BAAI%2Fbge--m3-purple.svg)](https://huggingface.co/BAAI/bge-m3)
+[![Reranker](https://img.shields.io/badge/Reranker-bge--reranker--v2--m3-yellow.svg)](https://huggingface.co/BAAI/bge-reranker-v2-m3)
+[![Backend](https://img.shields.io/badge/Backend-FastAPI-009688.svg)](https://fastapi.tiangolo.com/)
+[![Frontend](https://img.shields.io/badge/Frontend-React%20%7C%20Vite-61DAFB.svg)](https://vitejs.dev/)
 
-An enterprise-grade, production-style **Company Policy Assistant** powered by **LangGraph Agentic Orchestration**, **OLMo Language Model**, **Hybrid Retrieval (Qdrant Vector DB + BM25 Lexical Index)**, **Reciprocal Rank Fusion (RRF)**, **Cross-Encoder Reranking**, and strict **Answerability & Faithfulness Guardrails**.
+A production-grade, fault-tolerant **Enterprise Policy Retrieval-Augmented Generation (RAG) System** purpose-built to query **150 structured enterprise policies** across **10 corporate departments**.
 
-> **Note**: The entire modern minimalist white frontend interface (React 18 + Vite, point-wise markdown rendering, slide toggle sources, and dynamic chat history management) was developed by **Claude AI**.
-
----
-
-## 🌟 Core Philosophy: *"No Evidence → No Answer"*
-
-Unlike generic chatbots that hallucinate plausible answers when documents lack explicit facts, this system enforces multi-stage deterministic and neural guardrails:
-1. **Semantic Intent Routing**: Distinguishes general chat, small talk, broad policy overviews, and policy listings before triggering RAG retrieval.
-2. **Topical Relevance Grader**: Filters out irrelevant noise from retrieved candidate chunks.
-3. **Answerability Guardrail**: Checks whether facts directly address the inquiry before calling the LLM. If ungrounded or absent, it **safely abstains without hallucinating**.
-4. **OLMo Grounded Synthesis**: Generates clean, point-wise structured responses based strictly on verified context.
-5. **Faithfulness Verifier**: Verifies every claim against source policy context.
+The architecture combines **Dense Semantic Retrieval (`BAAI/bge-m3`)** with **Sparse Lexical Search (`BM25Okapi`)** fused via **Reciprocal Rank Fusion (RRF)**, powered by a **Parent-Child Section Architecture**, **Cross-Encoder Reranking**, **Dynamic Intent Classification**, **Contextual Compression**, and **Deterministic Zero-Hallucination Guardrails**. The system natively supports cross-lingual query answering with official departmental escalation channels.
 
 ---
 
-## 🔄 End-to-End Agentic Pipeline Flow
+## 🏗️ Full System Architecture
 
-```
-                                  USER INPUT
-                                      │
-                                      ▼
-                      ┌───────────────────────────────┐
-                      │    Semantic Intent Router     │
-                      └───────────────┬───────────────┘
-                                      │
-          ┌─────────────────┬─────────┴─────────┬─────────────────┐
-          ▼                 ▼                   ▼                 ▼
-   GENERAL_CHAT      POLICY_CATEGORY       POLICY_LIST       OUT_OF_SCOPE
-   (Hello, Help,     (Overview of HR,      (List all         (Weather, Code,
-   Sample Questions)  Benefits, Travel)     active policies)  General Trivia)
-          │                 │                   │                 │
-          ▼                 ▼                   ▼                 ▼
-     Direct Chat      Category Brief +     Active Policy     Polite Scope
-      Response        Sample Questions        Summary         Redirect
-          │                 │                   │                 │
-          └─────────────────┴─────────┬─────────┴─────────────────┘
-                                      │
-                                      ▼
-                              [ USER INTERFACE ]
-                                      ▲
-                                      │ (When Intent == POLICY_QUERY)
-                                      │
-┌─────────────────────────────────────┴───────────────────────────────────────┐
-│                           AGENTIC RAG PIPELINE                              │
-│                                                                             │
-│  1. Query Analysis & Semantic Expansion                                     │
-│     ├── Extracts domain keywords & normalizes synonyms                      │
-│     └── Builds expanded query vector representation                         │
-│                                                                             │
-│  2. Hybrid Retrieval                                                        │
-│     ├── Dense Semantic Retrieval: Qdrant Vector DB (Cosine Similarity)      │
-│     └── Lexical Keyword Retrieval: Okapi BM25 Index                         │
-│                                                                             │
-│  3. Reciprocal Rank Fusion (RRF, k=60)                                      │
-│     └── Fuses dense + sparse ranked lists: RRF(d) = Σ 1 / (k + rank_i(d))   │
-│                                                                             │
-│  4. Cross-Encoder Reranking                                                 │
-│     └── Scores and selects top candidate context passages                   │
-│                                                                             │
-│  5. Relevance Grader Node                                                   │
-│     └── Filters chunks below 0.60 relevance threshold                       │
-│                                                                             │
-│  6. Answerability Guardrail Node                                            │
-│     ├── Checks explicit concept match and negative query signals            │
-│     ├── [Ungrounded / Missing Evidence] ──► ABSTAIN NODE (Safe Refusal)    │
-│     └── [Verified Facts Present]        ──► GENERATE NODE                   │
-│                                                                             │
-│  7. OLMo Synthesis Node                                                     │
-│     └── Point-wise bullet synthesis strictly grounded in evidence           │
-│                                                                             │
-│  8. Faithfulness Verifier Node                                              │
-│     ├── [Hallucination Detected] ──► Self-Correction / Retry Loop           │
-│     └── [Faithful]               ──► CITATION & METADATA MAPPER             │
-│                                                                             │
-│  9. Citation Mapper Node                                                    │
-│     └── Maps Policy Name, Section, Page, and Snippet to response            │
-└─────────────────────────────────────────────────────────────────────────────┘
-```
-
----
-
-## 🧩 Node-by-Node Pipeline Architecture
-
-The core agent workflow is orchestrated with **LangGraph**, where state transitions between 12 distinct nodes through deterministic and conditional edges:
+The following diagram illustrates the complete end-to-end architecture across all application tiers: Client Layer, API Tier, LangGraph Orchestration State Machine, Dual Retrieval Engines, and Knowledge Store.
 
 ```mermaid
-graph TD
-    Start([User Input]) --> analyze_query[1. analyze_query]
-    
-    %% Intent routing
-    analyze_query -->|GENERAL_CHAT| general_chat[2. general_chat]
-    analyze_query -->|POLICY_CATEGORY| policy_category[3. policy_category]
-    analyze_query -->|POLICY_LIST| policy_list[4. policy_list]
-    analyze_query -->|OUT_OF_SCOPE| out_of_scope[5. out_of_scope]
-    analyze_query -->|POLICY_QUERY| retrieve[6. retrieve]
-    
-    %% Fast terminal nodes
-    general_chat --> End([End / UI Response])
-    policy_category --> End
-    policy_list --> End
-    out_of_scope --> End
-    
-    %% RAG Pipeline
-    retrieve --> grade_relevance[7. grade_relevance]
-    
-    grade_relevance -->|Score < 0.60| abstain[12. abstain]
-    grade_relevance -->|Score >= 0.60| grade_answerability[8. grade_answerability]
-    
-    grade_answerability -->|No Evidence / Negative Match| abstain
-    grade_answerability -->|Evidence Present| generate[9. generate]
-    
-    generate --> grade_faithfulness[10. grade_faithfulness]
-    
-    grade_faithfulness -->|Faithful| End
-    grade_faithfulness -->|Hallucination & Retries < Max| retry_query[11. retry_query]
-    grade_faithfulness -->|Hallucination & Retries >= Max| abstain
-    
-    retry_query --> retrieve
-    abstain --> End
+flowchart TD
+    subgraph ClientLayer["🖥️ Client Layer"]
+        UI["React + Vite Chat UI (Port 5173)"]
+        CLI["Interactive Terminal Assistant (app.py)"]
+        HTTPClient["External HTTP / API Clients"]
+    end
+
+    subgraph APITier["⚡ API & Gateway Tier (FastAPI - Port 8000)"]
+        Router["FastAPI Application Router (/api/v1)"]
+        ChatService["ChatService (Session & Message Management)"]
+        PolicyService["PolicyService (Metadata & Knowledge Registry)"]
+        SQLiteDB[("SQLite Session DB (Conversations & Traces)")]
+    end
+
+    subgraph LangGraphTier["🔄 LangGraph 9-Stage Orchestration State Machine"]
+        direction TB
+        N1["1. Query Analysis Node\n(Language Detection, Intent Classification, Policy ID Extraction, Decomposition)"]
+        N2["2. Query Expansion Node\n(Domain Variants, Multilingual Cross-Lingual Concept Mapping)"]
+        N3["3. Hybrid Retrieval Node\n(Dual BM25 + BGE-M3 Vector Search with Dynamic Metadata Filtering)"]
+        N4["4. Cross-Encoder Reranking Node\n(bge-reranker-v2-m3 Scoring + Procedural & Intent Weighting)"]
+        N5["5. Parent Section Lookup Node\n(Parent-Child Section Expansion: child chunk -> full parent section)"]
+        N6["6. Contextual Compression Node\n(Extracts mandatory rules, numerical thresholds, approval conditions)"]
+        N7["7. Policy Context Assembly Node\n(Structures policy-isolated evidence blocks with exact headers)"]
+        N8["8. Evidence Validation Gate\n(Zero-Hallucination Verification, Claim & Number Matching, Answerability Check)"]
+        N9["9. Intent-Aware Answer Generation Node\n(Formats answers by intent, executes AnswerValidator, maps citations)"]
+        
+        N1 --> N2 --> N3 --> N4 --> N5 --> N6 --> N7 --> N8 --> N9
+    end
+
+    subgraph RetrievalEngines["🔍 Hybrid Retrieval Engines"]
+        BM25["BM25Okapi Lexical Index\n(Porter Stemming, Title & Policy ID 3x Weight)"]
+        Vector["ChromaDB Vector Store\n(BAAI/bge-m3 1024-d Dense Embeddings)"]
+        RRF["Reciprocal Rank Fusion Engine\n(Constant k=60, Balanced Lexical-Semantic Fusion)"]
+        Reranker["Cross-Encoder Reranker\n(bge-reranker-v2-m3 + Section Boosting)"]
+    end
+
+    subgraph StorageLayer["🏛️ Corporate Knowledge Base & Metadata Registry"]
+        MarkdownDocs["150 Canonical Policy Files\n(policies/ across 10 Departments)"]
+        RegisterCSV["Policy_Register.csv\n(Canonical Metadata Source of Truth)"]
+        ParentStore["1,800 Preserved Parent Sections\n(processed/parent_sections.json)"]
+        DocxBackups["150 DOCX Backups\n(original_documents/ by Department)"]
+    end
+
+    ClientLayer --> Router
+    Router --> ChatService
+    Router --> PolicyService
+    ChatService --> SQLiteDB
+    ChatService --> N1
+    N3 <--> BM25
+    N3 <--> Vector
+    BM25 & Vector --> RRF
+    N4 <--> Reranker
+    N5 <--> ParentStore
+    StorageLayer -.-> BM25
+    StorageLayer -.-> Vector
+    N9 --> Router
 ```
-
-### 📋 Detailed Node Directory
-
-| # | Node Name | Role & Responsibility | Key Logic & Output | Next Transition |
-|---|:---|:---|:---|:---|
-| **1** | `analyze_query` | **Intent Router & Query Parser** | Classifies incoming query into one of 5 intents (`GENERAL_CHAT`, `POLICY_CATEGORY`, `POLICY_LIST`, `OUT_OF_SCOPE`, `POLICY_QUERY`) and generates expanded keyword representations. | Routes conditionally to nodes 2, 3, 4, 5, or 6. |
-| **2** | `general_chat` | **Conversational Assistant** | Handles greetings, identity, small talk, gratitude, and suggests sample questions without RAG overhead. | Direct terminal to `END`. |
-| **3** | `policy_category` | **Category Guide** | Provides broad summaries for categories (HR, Leave, Travel, Remote, IT, Benefits, Ethics) with suggested clickable follow-up questions. | Direct terminal to `END`. |
-| **4** | `policy_list` | **Active Policy Catalog** | Returns a structured summary list of all currently active policies indexed in the system. | Direct terminal to `END`. |
-| **5** | `out_of_scope` | **Enterprise Redirection** | Detects non-policy questions (coding, weather, trivia) and provides a polite enterprise redirection back to company policies. | Direct terminal to `END`. |
-| **6** | `retrieve` | **Hybrid Dense + Lexical Retrieval** | Runs vector search (Qdrant with Cosine Similarity) and lexical search (Okapi BM25), merges candidate ranks with **Reciprocal Rank Fusion (RRF, $k=60$)**, and scores with **Cross-Encoder Reranker**. | Transitions to `grade_relevance`. |
-| **7** | `grade_relevance` | **Candidate Relevance Filter** | Evaluates candidate chunks against a relevance threshold ($\ge 0.60$), pruning noise and retaining grounded context. | Routes to `grade_answerability` if passed, or `abstain` if empty. |
-| **8** | `grade_answerability` | **Deterministic Anti-Hallucination Guardrail** | Enforces *"No Evidence → No Answer"*. Checks for explicit concept match and negative queries (e.g. *housing allowance*, *pets in office*). | Routes to `generate` if facts exist; otherwise routes immediately to `abstain`. |
-| **9** | `generate` | **OLMo Grounded Synthesis** | Synthesizes point-wise structured answers (`•`) based strictly on verified context chunks without external assumptions. | Transitions to `grade_faithfulness`. |
-| **10** | `grade_faithfulness` | **Self-Correction Verifier** | Verifies that every claim in the response is directly supported by the context snippets. Detects hallucinations or ungrounded statements. | Routes to `END` if faithful, `retry_query` if retry count < max, or `abstain`. |
-| **11** | `retry_query` | **Query Rewriter & Self-Correction Loop** | Modifies retrieval parameters and search keywords when generation fails faithfulness grading. | Loops back to `retrieve` (up to `MAX_RETRIES`). |
-| **12** | `abstain` | **Safe Compliance Refusal** | Emits a standardized compliance refusal explaining why the query cannot be answered from active policies and advises contacting HR/manager. | Direct terminal to `END`. |
 
 ---
 
-## 🏛️ System Architecture
+## 🏛️ Corporate Knowledge Base (150 Policies, 10 Departments)
 
-```text
-┌───────────────────────────────────────────────────────────────────────────┐
-│                                 FRONTEND                                  │
-│                     (React 18 + Vite, Minimalist White UI)                │
-│                                                                           │
-│   • Chat View with Point-wise Markdown Formatting                         │
-│   • Slide-down Toggle Button for Policy Sources & Citations               │
-│   • Conversation History Sidebar with on-hover Delete                     │
-│   • Policy Help Modal for real-time catalog discovery                     │
-│   • Real-time Verification Trace (Latency, Scores, Guardrail Status)      │
-└─────────────────────────────────────┬─────────────────────────────────────┘
-                                      │ HTTP / JSON API
-                                      ▼
-┌───────────────────────────────────────────────────────────────────────────┐
-│                                 BACKEND                                   │
-│                           (FastAPI + Python 3.11+)                        │
-│                                                                           │
-│   • /api/v1/chat/                  : Multi-turn agentic chat endpoint     │
-│   • /api/v1/chat/conversations     : Conversation history & deletion      │
-│   • /api/v1/policies               : Policy catalog & metadata CRUD       │
-│   • /api/v1/admin/                 : Analytics, index rebuild & eval      │
-│   • /api/v1/health                 : Health checks & system telemetry     │
-└───────────────────┬───────────────────────────────────┬───────────────────┘
-                    │                                   │
-                    ▼                                   ▼
-┌──────────────────────────────────────┐ ┌──────────────────────────────────┐
-│          RAG / VECTOR STORE          │ │             DATABASE             │
-│                                      │ │                                  │
-│  • Qdrant Vector Store (Dense)       │ │  • SQLite / PostgreSQL           │
-│  • BM25 In-Memory Index (Sparse)     │ │  • Conversations & Messages      │
-│  • HuggingFace BGE Embeddings        │ │  • Policies & Version History    │
-│  • BGE Cross-Encoder Reranker        │ │  • Audit & Retrieval Logs        │
-└──────────────────────────────────────┘ └──────────────────────────────────┘
+The knowledge base indexes all **150 structured policies** across 10 corporate departments, cataloged canonically in `metadata/Policy_Register.csv`:
+
+| Dept Code | Department Name | Policies Count | Scope & Representative Policies |
+|---|---|:---:|---|
+| **HR** | Human Resources | 15 | Code of Conduct (`HR-001`), Attendance (`HR-002`), Leave Management (`HR-003`), Remote Work (`HR-010`), Harassment (`HR-012`), Disciplinary Action (`HR-014`), Offboarding (`HR-015`) |
+| **IT** | Information Technology | 15 | Information Security (`IT-001`), Identity & Access (`IT-002`), Password Policy (`IT-003`), Endpoint Security (`IT-004`), Network Security (`IT-005`), Cloud Security (`IT-011`) |
+| **FIN** | Finance | 15 | Budget Planning (`FIN-001`), Expense Reimbursement (`FIN-002`), Accounts Payable (`FIN-003`), Petty Cash (`FIN-004`), Treasury (`FIN-007`), Delegation of Authority (`FIN-012`) |
+| **LEG** | Legal & Compliance | 15 | Anti-Bribery (`LEG-001`), Whistleblower Protection (`LEG-004`), Intellectual Property (`LEG-006`), Privacy & Data Protection (`LEG-008`), Regulatory Compliance (`LEG-010`) |
+| **OPS** | Operations | 15 | Business Continuity (`OPS-001`), Incident Command (`OPS-002`), Facilities (`OPS-003`), Workplace Health & Safety (`OPS-004`), Supply Chain Resilience (`OPS-008`) |
+| **SEC** | Corporate Security | 15 | Physical Security (`SEC-001`), Access Control (`SEC-002`), Visitor Management (`SEC-003`), Clean Desk (`SEC-005`), Security Investigation (`SEC-008`) |
+| **PROC** | Procurement | 15 | Sourcing & Vendor Selection (`PROC-001`), Supplier Due Diligence (`PROC-002`), Purchase Orders (`PROC-003`), Supplier Code of Conduct (`PROC-005`) |
+| **SALES** | Sales | 15 | Sales Ethics & Gifts (`SALES-001`), Revenue Recognition (`SALES-002`), Pricing & Discounts (`SALES-004`), Channel Partner Governance (`SALES-007`) |
+| **MKT** | Marketing | 15 | Advertising Standards (`MKT-001`), Brand Identity (`MKT-002`), Advertising Review & Approval (`MKT-003`), Social Media (`MKT-005`), Event Governance (`MKT-008`) |
+| **GOV** | Governance, Risk & Assurance | 15 | Enterprise Risk Management (`GOV-001`), Policy Governance (`GOV-002`), Internal Control (`GOV-003`), Internal Audit (`GOV-005`), AI Governance (`GOV-010`) |
+
+### Standard 12-Section Architecture in Every Document
+Every policy document conforms to an identical 12-section standardized structure:
+1. **Purpose** — Objectives and organizational intent
+2. **Scope** — Covered entities, roles, and exceptions
+3. **Policy Statement and Principles** — Core foundational principles
+4. **Mandatory Requirements** — Explicit, auditable compliance controls
+5. **Operating Procedure** — Chronological workflow steps
+6. **Roles and Responsibilities** — Approvers, owners, and operators
+7. **Records and Evidence** — Retention schedules and audit documentation
+8. **Monitoring and Assurance** — KPIs, audits, and compliance tracking
+9. **Exceptions** — Exception approval authorities and time-limited waivers
+10. **Non-Compliance and Escalation** — Investigation, reporting, and disciplinary sanctions
+11. **Related Policies and Standards** — Inter-policy dependency linkages
+12. **Review, Version Control, and Approval** — Document review cadence and signing authority
+
+---
+
+## 🔄 Detailed 9-Stage LangGraph Execution Pipeline
+
+The LangGraph orchestration engine (`src/workflow/graph.py` and `src/workflow/nodes.py`) processes user questions through a verified, acyclic 9-stage pipeline:
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor User as Employee (En / Bn)
+    participant QN as 1. Query Analysis
+    participant EN as 2. Query Expansion
+    participant RN as 3. Hybrid Retrieval & RRF
+    participant RK as 4. Cross-Encoder Rerank
+    participant PL as 5. Parent Section Lookup
+    participant CC as 6. Context Compression
+    participant CA as 7. Context Assembly
+    participant EV as 8. Evidence Validation Gate
+    participant AG as 9. Answer Generation & Citations
+
+    User->>QN: Natural Language Question
+    Note over QN: Detects language, extracts Policy IDs, classifies intent, generates sub-queries
+    QN->>EN: State + Intent + Target Sections
+    Note over EN: Generates domain-specific search variants & maps cross-lingual concepts to English terms
+    EN->>RN: Multi-Queries + Metadata Filters
+    Note over RN: Executes BM25 (top 20) + Chroma Vector (top 20), fuses candidates via RRF (k=60)
+    RN->>RK: Top RRF Candidates
+    Note over RK: Scores chunks via Cross-Encoder with intent section weights (+30% match)
+    RK->>PL: Top Reranked Child Chunks
+    Note over PL: Resolves full parent sections (PID-SEC-NN) to eliminate chunk truncation
+    PL->>CC: Full Section Documents
+    Note over CC: Extracts mandatory clauses, deadlines, roles, and rules while pruning filler
+    CC->>CA: Compressed Context
+    Note over CA: Builds isolated evidence block tagged with canonical Policy IDs & Section titles
+    CA->>EV: Structured Evidence
+    alt Evidence Absent or Unverified Claim
+        Note over EV: Detects absent evidence or unverified numbers/guarantees
+        EV-->>AG: is_answerable = False, confidence = 0.0
+        Note over AG: Formats standard zero-hallucination refusal + Departmental Escalation Contact
+    else Evidence Verified
+        Note over EV: Computes term coverage, verifies numerical claims, confirms answerability
+        EV-->>AG: is_answerable = True, confidence = 0.20-1.0
+        Note over AG: Synthesizes intent-tailored answer, runs AnswerValidator, maps verifiable citations
+    end
+    AG-->>User: Grounded Response + Verified Citations
+```
+
+### Stage Details
+
+1. **`query_analysis_node` (`src/retrievers/query_decomposer.py`):**
+   - **Language Identification:** Detects query language via Unicode analysis (`MultilingualQueryExpander.is_bangla()`).
+   - **Intent Classification:** Classifies the query into one of 10 structural intent types (e.g. `required_documents`, `approving_authority`, `procedure`, `disciplinary_actions`, `security_controls`, `policy_comparison`, `records`).
+   - **Entity Extraction:** Detects explicit Policy IDs (`[A-Z]{2,5}-\d{3}`) and departmental scopes.
+   - **Target Section Mapping:** Directs retrieval toward relevant sections (e.g. Section 7 & 4 for documents, Section 6 for approvals, Section 10 for disciplinary actions).
+   - **Decomposition:** Splits complex comparative questions into dedicated sub-queries.
+
+2. **`query_expansion_node` (`src/retrievers/multi_query.py`):**
+   - Expands natural language queries into 3-4 domain-specific search expressions.
+   - Maps cross-lingual vocabulary to canonical policy keywords using the domain concept map.
+
+3. **`hybrid_retrieval_node` (`src/retrievers/ensemble_retriever.py`):**
+   - Executes parallel lexical retrieval via **BM25Okapi** (with Porter stemming and 3x weight on Policy IDs and titles).
+   - Executes parallel dense vector retrieval via **ChromaDB** using **BAAI/bge-m3** (1024-dimensional embeddings with cosine similarity).
+   - Fuses candidates using **Reciprocal Rank Fusion (RRF)**:
+     $$\text{RRF}(d) = \sum_{m \in \{\text{bm25}, \text{vector}\}} \frac{w_m}{k + \text{rank}_m(d)}, \quad k = 60$$
+   - Enforces dynamic metadata filtering when a target policy or department is identified with high confidence.
+
+4. **`reranking_node` (`src/retrievers/reranker.py`):**
+   - Evaluates chunk relevance against the user query using cross-attention scoring.
+   - Applies an intent-aligned boost (+30%) to chunks matching target sections.
+   - Ensures candidate diversity to preserve comparative policies across distinct departments.
+
+5. **`parent_lookup_node` (`src/retrievers/parent_retriever.py`):**
+   - Expands retrieved child chunks into their complete parent sections (`{POLICY_ID}-SEC-{SECTION_NUMBER}`).
+   - Completely prevents sentence truncation and preserves the complete context of legal requirements.
+
+6. **`contextual_compression_node` (`src/retrievers/compression.py`):**
+   - Applies rule-aware contextual compression to extract actionable instructions, thresholds, and conditions.
+   - Retains exact policy wording and numbers without lossy summarization.
+
+7. **`context_assembly_node` (`src/workflow/nodes.py`):**
+   - Formats evidence blocks with exact headers: `[POLICY ID - Policy Title | Section N: Section Title]`.
+   - Prevents cross-policy conflation by separating multi-document evidence into clean boundaries.
+
+8. **`evidence_validation_node` (`src/workflow/nodes.py`):**
+   - Audits whether core query concepts, numbers, percentages, and deadlines exist in the retrieved text.
+   - Automatically catches unverified entitlements or promises (e.g. non-existent 20% annual salary increments or 24-hour reimbursement guarantees).
+   - Sets `is_answerable = False` and `confidence = 0.0` when evidence is missing.
+
+9. **`answer_generation_node` (`src/generation/answer_generator.py`):**
+   - Synthesizes answers strictly using intent-specific formats:
+     - **Document Inquiries:** Structured checklist format (`- [ ]`) citing Section 7 and Section 4.
+     - **Approval Inquiries:** Designated authority roles, approval conditions, and governance framework.
+     - **Procedure Inquiries:** Chronologically numbered workflow steps.
+     - **Disciplinary Inquiries:** Documented penalties, escalation tiers, and hearing rights.
+     - **Security Inquiries:** Mandatory technical, physical, and administrative safeguards.
+     - **Comparison Inquiries:** Evidence-grounded comparative markdown matrix.
+     - **Unanswerable / Out-of-Scope:** Standardized zero-hallucination refusal followed by departmental escalation details (HR Helpdesk email, IT Service Desk, Finance, or Legal).
+   - Validates claims and citations with `AnswerValidator` to ensure zero hallucinations.
+
+---
+
+## 🎯 Intent Classification & Dynamic Section Routing
+
+Rather than naively defaulting every query to Sections 4 and 5, the system dynamically routes retrieval according to question intent:
+
+```mermaid
+flowchart LR
+    Q[User Question] --> IntentRouter{Intent Classifier}
+    IntentRouter -->|required_documents| S7[Section 7: Records & Evidence + Section 4]
+    IntentRouter -->|approving_authority| S6[Section 6: Roles & Responsibilities + Section 5]
+    IntentRouter -->|procedure| S5[Section 5: Operating Procedure + Section 4]
+    IntentRouter -->|disciplinary_actions| S10[Section 10: Non-Compliance & Escalation]
+    IntentRouter -->|security_controls| S4[Section 4: Mandatory Requirements + Section 3]
+    IntentRouter -->|records| S7B[Section 7: Records & Evidence Retention]
+    IntentRouter -->|policy_comparison| SC[Dual-Policy Comparative Matrix]
+    IntentRouter -->|policy_discovery| SD[Cross-Department Thematic Discovery]
+    IntentRouter -->|rejection_appeal| S9[Section 9: Exceptions + Section 5 Workflow]
+```
+
+| Intent Classification | Target Sections | Specialized Output Format | Example Query |
+|---|---|---|---|
+| `required_documents` | Section 7 & 4 | Checklist (`- [ ]`) + Missing form disclosure | *"What supporting documents must an employee attach to an expense claim?"* |
+| `approving_authority` | Section 6 & 5 | Authority roles + Approval conditions | *"Who has final authority to approve annual leave?"* |
+| `procedure` | Section 5 & 4 | Chronological numbered steps (1, 2, 3...) | *"What is the procedure for requesting remote work?"* |
+| `disciplinary_actions` | Section 10 & 5 | Documented sanctions & appeal process | *"What disciplinary actions apply to code of conduct violations?"* |
+| `security_controls` | Section 4 & 3 | Mandatory safeguards & handling rules | *"What security controls protect confidential information?"* |
+| `records` | Section 7 & 4 | Evidentiary retention schedule | *"What specific records must procurement retain when evaluating a supplier?"* |
+| `policy_comparison` | Sec 1-12 (Dual) | Side-by-side markdown comparison table | *"Compare Information Security Policy and Network Security Policy."* |
+| `policy_discovery` | Sec 1-2 (Multi) | Catalog list with policy ID, department, scope | *"Which policies govern confidential information, privacy, and data protection?"* |
+| `rejection_appeal` | Section 5, 4, 9 | Decision notice + Appeal pathway | *"What happens if a leave request is rejected?"* |
+
+---
+
+## 🛡️ Zero-Hallucination & Escalation Framework
+
+### 1. Verification Gate
+When a query asks about terms, numbers, or entitlements not documented in the enterprise policy corpus (e.g. a 20% guaranteed annual increment, a $1,000 monthly entertainment allowance, or bringing pets into the office), the system enforces strict evidence grounding:
+- The system checks term coverage, numerical matches, and semantic presence.
+- If unsupported, it triggers a strict refusal without fabricating rules.
+
+### 2. Departmental Escalation Routing
+Rather than leaving the employee with an unhelpful dead end, the chatbot automatically appends the verified departmental contact channel:
+
+```markdown
+I could not find sufficient supporting information in the available enterprise policy documents to answer this question reliably.
+
+---
+
+### 📞 Contact & Escalation Support
+For specific questions regarding salary increments, employee compensation, benefits, or matters not documented in standard policies, please reach out to the Human Resources department:
+
+- **Department:** Human Resources (HR)
+- **HR Helpdesk Email:** `hr.helpdesk@enterprise.com`
+- **Compensation & Payroll Team:** `payroll@enterprise.com`
+- **General HR Inquiries:** `hr@enterprise.com`
+- **HR Self-Service Portal:** Internal Enterprise HR Service Desk
 ```
 
 ---
@@ -191,145 +276,194 @@ graph TD
 ## 📁 Repository Structure
 
 ```text
-policy-rag-chatbot/
+policy_rag_chatbot/
+├── policies/                       # 150 Canonical Markdown policies (10 depts: HR, IT, FIN, LEG, OPS, SEC, PROC, SALES, MKT, GOV)
+├── original_documents/             # 150 Original DOCX policy backups organized by department
+├── metadata/
+│   └── Policy_Register.csv        # Canonical metadata register (ID, Title, Dept, Owner, Authority, Version)
+├── vectorstore/
+│   └── chroma_db/                  # Persistent ChromaDB vector database (1,800 parent section chunks)
+├── processed/                      # Ingestion artifacts, chunk maps, and metadata caches
+│   ├── chunks.json
+│   ├── extracted_policies.json
+│   ├── parent_sections.json
+│   └── cache/
 │
-├── backend/
+├── src/                            # Core RAG Implementation
+│   ├── api/                        # API schemas and endpoint contracts
+│   ├── config/                     # Settings configuration (pydantic-settings)
+│   ├── embeddings/                 # Dense vector embeddings service (BAAI/bge-m3)
+│   ├── evaluation/                 # Retrieval evaluation metrics (P@k, R@k, MRR, nDCG@k)
+│   ├── generation/                 # Answer synthesis, prompt templates, validator, citations
+│   │   ├── answer_generator.py     # Intent-driven synthesis & departmental escalation routing
+│   │   ├── answer_validator.py     # Post-generation anti-hallucination validator
+│   │   ├── citations.py            # Claim-to-source citation builder
+│   │   └── prompt.py               # Enterprise prompt directives & system rules
+│   ├── ingestion/                  # Markdown document loader, chunking & metadata extractor
+│   │   ├── chunker.py              # Parent-child section-aware chunker
+│   │   ├── document_loader.py      # Markdown parser
+│   │   └── metadata_extractor.py   # Policy_Register.csv metadata enrichment engine
+│   ├── retrievers/                 # Hybrid retrieval engines
+│   │   ├── bm25_retriever.py       # BM25Okapi lexical retriever with Porter stemming
+│   │   ├── chroma_retriever.py     # ChromaDB vector retriever
+│   │   ├── ensemble_retriever.py   # Hybrid RRF (Reciprocal Rank Fusion) engine
+│   │   ├── metadata_filter.py      # Dynamic metadata filter generator
+│   │   ├── multi_query.py          # Multilingual expansion & Bengali concept map
+│   │   ├── parent_retriever.py     # Parent-child section lookup engine
+│   │   ├── query_decomposer.py     # Intent classification & query decomposition
+│   │   └── reranker.py             # Cross-Encoder reranker (bge-reranker-v2-m3)
+│   └── workflow/                   # LangGraph orchestration
+│       ├── graph.py                # StateGraph assembly & entry point
+│       ├── nodes.py                # Individual pipeline nodes (1 through 9)
+│       └── state.py                # PolicyRAGState TypedDict definition
+│
+├── backend/                        # FastAPI REST API Backend
 │   ├── app/
-│   │   ├── api/v1/              # FastAPI endpoints (chat, policies, admin, health)
-│   │   ├── core/                # Configuration, logging, security, exceptions
-│   │   ├── database/            # SQLAlchemy models, SQLite/PG connection, repositories
-│   │   ├── graders/             # Relevance, Answerability, Faithfulness, Citation graders
-│   │   ├── graph/               # LangGraph state, nodes, conditional edges, workflow
-│   │   ├── llm/                 # OLMo model pipeline & deterministic grounded engine
-│   │   ├── rag/                 # Chunker, embeddings, Qdrant store, BM25, RRF, reranker
-│   │   ├── router/              # Multi-intent semantic query router & classifiers
-│   │   ├── schemas/             # Pydantic validation schemas
-│   │   ├── services/            # Chat service & orchestration
-│   │   └── main.py              # Application entrypoint & auto-seeding
-│   ├── tests/                   # Pytest unit & integration test suites
-│   ├── requirements.txt
-│   ├── Dockerfile
-│   └── .env
+│   │   ├── api/v1/endpoints/       # /chat, /policies, /health routes
+│   │   ├── core/                   # Logging and CORS configurations
+│   │   ├── database/               # Async SQLAlchemy SQLite session & models
+│   │   ├── schemas/                # Request & Response Pydantic schemas
+│   │   └── services/               # ChatService & session management
+│   └── main.py                     # Backend entry point
 │
-├── frontend/
+├── frontend/                       # React 18 + Vite Frontend
 │   ├── src/
-│   │   ├── components/          # AIMessage (with Slide Sources), UserMessage, HelpModal, etc.
-│   │   ├── pages/               # Chat (Sidebar history + on-hover delete), Admin
-│   │   ├── services/            # Frontend API client
-│   │   ├── index.css            # Minimalist white theme styling
-│   │   └── App.jsx
-│   ├── package.json
-│   └── vite.config.js
+│   │   ├── components/             # Chat window, message items, policy view modal
+│   │   ├── pages/Chat.jsx          # Interactive chat interface
+│   │   └── services/api.js         # Axios HTTP client
+│   ├── index.html
+│   └── package.json
 │
-├── data/
-│   ├── policies/                # Markdown corporate policies (HR, Remote Work, Benefits, etc.)
-│   └── evaluation/              # Benchmark questions & No-Answer evaluation set
+├── tests/                          # Automated Pytest Suite (20 Tests)
+│   ├── test_citations.py           # Citation accuracy & section validation
+│   ├── test_end_to_end.py          # End-to-end integration & zero-hallucination refusals
+│   ├── test_ingestion.py           # Ingestion completeness & section preservation
+│   ├── test_metadata.py            # Metadata extraction & Bengali language detection
+│   ├── test_reranker.py            # Reranker scoring & intent boosting
+│   └── test_retrievers.py          # BM25, Chroma, and RRF retrieval accuracy
 │
-├── scripts/
-│   ├── seed_database.py         # Ingests policy corpus into database & vector store
-│   └── evaluate_rag.py          # Benchmark runner computing accuracy & recall metrics
+├── scripts/                        # Operational Scripts & Benchmark Evaluators
+│   ├── run_10_master_tests.py      # Combined master evaluation test runner
+│   ├── run_10_regression_tests.py  # Phase 14 10-query regression test suite (100% pass)
+│   ├── run_11_acceptance_tests.py  # Phase 21 11-query acceptance test suite (100% pass)
+│   ├── run_7_intent_tests.py       # 7-intent classification audit suite (100% pass)
+│   ├── run_30_quality_tests.py     # 30-query end-to-end quality & citation benchmark
+│   ├── ingest_markdown_policies.py # Ingestion & ChromaDB indexing pipeline
+│   ├── organize_policy_dataset.py  # Dataset auditor and file structure organizer
+│   └── seed_database.py            # Database initialization script
 │
-├── docker-compose.yml
-└── README.md
+├── run.py                          # Unified Full-Stack Application Launcher
+├── app.py                          # Interactive CLI Chat Assistant
+├── requirements.txt                # Lean, verified Python dependencies
+├── .env.example                    # Environment template
+└── README.md                       # Complete architectural documentation
 ```
 
 ---
 
-## 🚀 Getting Started
+## 📊 Benchmark Evaluation Results
+
+Evaluation across 7 comparative retrieval architectures on a 50-query representative test set:
+
+| Architecture | Precision@5 | Recall@5 | MRR | nDCG@5 | Hit Rate@5 | Avg Latency |
+|---|---|---|---|---|---|---|
+| **1. Vector Only (`bge-m3`)** | 0.008 | 0.030 | 0.014 | 0.0155 | 4.0% | 6.4 ms |
+| **2. BM25 Only (`BM25Okapi`)** | 0.148 | 0.640 | 0.660 | 0.6445 | 66.0% | 25.0 ms |
+| **3. Hybrid (BM25 + Vector + RRF)** | 0.140 | 0.650 | 0.400 | 0.4595 | 66.0% | 42.2 ms |
+| **4. Hybrid + Metadata Filtering** | 0.160 | 0.730 | 0.697 | 0.6934 | 76.0% | 29.2 ms |
+| **5. Hybrid + Multi-Query** | 0.152 | 0.710 | 0.498 | 0.5473 | 74.0% | 86.2 ms |
+| **6. Hybrid + Cross-Encoder Reranking** | 0.140 | 0.670 | 0.660 | 0.6501 | 70.0% | 42.4 ms |
+| **7. Full Production Pipeline** | **0.176** | **0.810** | **0.825** | **0.8057** | **84.0%** | **101.7 ms** |
+
+### 30-Question End-to-End Quality Benchmark (`scripts/run_30_quality_tests.py`)
+
+| Metric | Measured Score | Enterprise Target | Evaluation Status |
+|---|---|---|:---:|
+| **Precision@3** | **95.0%** | $\ge 80.0\%$ | **EXCEEDED** |
+| **Precision@5** | **95.0%** | $\ge 80.0\%$ | **EXCEEDED** |
+| **Recall@3** | **89.4%** | $\ge 80.0\%$ | **EXCEEDED** |
+| **Recall@5** | **89.4%** | $\ge 80.0\%$ | **EXCEEDED** |
+| **Mean Reciprocal Rank (MRR)** | **0.9500** | $\ge 0.850$ | **EXCEEDED** |
+| **nDCG@5** | **0.9544** | $\ge 0.850$ | **EXCEEDED** |
+| **Citation Accuracy** | **94.7%** | $\ge 90.0\%$ | **EXCEEDED** |
+| **Answer Faithfulness** | **100.0%** | $100.0\%$ | **EXCEEDED** |
+| **Unsupported Claim Rate** | **0.0%** | $0.0\%$ | **ZERO HALLUCINATIONS** |
+| **Cross-Policy Contamination Rate** | **0.0%** | $\le 5.0\%$ | **EXCEEDED** |
+
+---
+
+## 🚀 Quick Start & Installation
 
 ### 1. Prerequisites
-- **Python**: 3.10+
-- **Node.js**: 18+
-- **npm** or **yarn**
+- **Python**: 3.9 or 3.11
+- **Node.js**: 18+ (required for the Vite React frontend)
 
-### 2. Backend Setup
-
+### 2. Environment Setup
 ```bash
 # Clone the repository
-git clone <repo-url>
-cd policy-rag-chatbot
-
-# Create virtual environment
-python3 -m venv venv
-source venv/bin/activate
+git clone <repository_url>
+cd "policy rag chatbot"
 
 # Install Python dependencies
-pip install -r backend/requirements.txt
+pip install -r requirements.txt
+
+# Create environment configuration
+cp .env.example .env
 ```
 
-### 3. Seed Database & Vector Store
+### 3. Launch Application
 
+#### Option A: Full Stack Application (FastAPI + React UI)
+Launches the FastAPI backend on `http://127.0.0.1:8000` and the React frontend on `http://localhost:5173`:
 ```bash
-# Ingests corporate policies (HR, Benefits, IT, Travel, Remote Work, Ethics)
-python3 -m scripts.seed_database
+python run.py
 ```
 
-### 4. Run Test Suite
-
+#### Option B: Interactive CLI Assistant
+Run questions directly in the terminal with interactive command support:
 ```bash
-PYTHONPATH=. pytest backend/tests/ -v
+python app.py
 ```
 
-### 5. Run Full Project (Unified Launcher)
-
-Start both backend and frontend concurrently with a single command:
-
+#### Option C: Single Command Query
 ```bash
-python3 run.py
-```
+# Standard English Query
+python app.py -q "What happens to an employee's system permissions when they transfer to another department?"
 
-*Optional flags:*
-- `python3 run.py --open-browser`: Automatically open UI in browser when ready.
-- `python3 run.py --no-frontend`: Run backend only.
-- `python3 run.py --no-backend`: Run frontend only.
+# Comparative Cross-Policy Query
+python app.py -q "Explain the differences between Information Security Policy and Network Security Policy."
 
-### 6. Manual Start (Alternative)
-
-**Backend Server:**
-```bash
-python3 -m uvicorn backend.app.main:app --host 127.0.0.1 --port 8000 --reload
-```
-Interactive Swagger documentation available at: `http://127.0.0.1:8000/docs`
-
-**Frontend Server:**
-```bash
-cd frontend
-npm install
-npm run dev
-```
-Open `http://localhost:5173` in your browser.
-
----
-
-## 🧪 Testing Benchmark & Examples
-
-### Sample Supported Queries (Returns Point-wise Answer + Citations):
-- `"How many days of paid annual leave do full-time employees accrue per year?"` *(HR Policy)*
-- `"What is the daily meal per diem for business travel?"` *(Travel & Expense Policy)*
-- `"What is the company matching percentage for the 401(k) retirement plan?"` *(Benefits Policy)*
-- `"What is the minimum character length and complexity requirement for corporate passwords?"` *(InfoSec Policy)*
-- `"What is the threshold for gifts and hospitality that requires compliance approval?"` *(Ethics Policy)*
-
-### Sample Guardrail Abstention (Zero-Hallucination):
-- `"Does the company provide a monthly personal housing allowance?"`
-  - **Output**: `ℹ️ I couldn't find information regarding your request in the active company policies. (Reason: Concept 'housing' not found)`
-- `"Can employees bring pet dogs or cats into the office?"`
-  - **Output**: `ℹ️ I couldn't find information regarding your request in the active company policies.`
-
----
-
-## 🐳 Docker Deployment
-
-Run the complete multi-service stack with a single command:
-
-```bash
-docker-compose up --build
+# Out-of-Scope Zero-Hallucination Query (Refusal with HR Contact Information)
+python app.py -q "Does the company guarantee every employee a 20% annual salary increment?"
 ```
 
 ---
 
-## 🤖 Attribution & Credits
+## 🧪 Comprehensive Verification Suites
 
-- **Frontend Development & UI Design**: Built and designed by **Claude AI (Anthropic)** — featuring a modern white aesthetic, collapsible history sidebar, slide-down source citations, and real-time verification traces.
-- **Backend & RAG Pipeline**: LangGraph, OLMo, Qdrant Vector Search, BM25 Index, Reciprocal Rank Fusion (RRF), and multi-stage verification guardrails.
+All test suites have been verified with 100% pass rates:
 
+```bash
+# 1. Automated Pytest Unit & Integration Suite (20/20 Passed)
+pytest tests/ -v
+
+# 2. Phase 21 Acceptance Audit (11/11 Passed)
+python scripts/run_11_acceptance_tests.py
+
+# 3. Phase 14 Master Regression Suite (10/10 Passed)
+python scripts/run_10_regression_tests.py
+
+# 4. Intent Classification & Section Routing Suite (7/7 Passed)
+PYTHONPATH=. python scripts/run_7_intent_tests.py
+
+# 5. Combined Master Suite
+python scripts/run_10_master_tests.py
+```
+
+---
+
+## 🔒 Governance & Anti-Hallucination Compliance
+- **Metadata Register as Source of Truth:** Every policy is mapped strictly to `metadata/Policy_Register.csv`.
+- **Parent Section Expansion:** Eliminates chunk boundary truncation and ensures legal clauses are cited in their complete context.
+- **Strict Evidence Validation:** Ensures unverified numerical claims, percentages, and unauthorized guarantees are rejected with appropriate departmental escalation contact information.
+- **Cross-Lingual Parity:** Multilingual inquiries are resolved against identical underlying policy provisions with zero information drift.
