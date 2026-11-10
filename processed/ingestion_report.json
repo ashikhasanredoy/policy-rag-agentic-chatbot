@@ -1,0 +1,11 @@
+{
+  "status": "success",
+  "dataset": "Enterprise Policies 150 (Revised)",
+  "timestamp": "2026-11-08 22:57:44",
+  "total_policies": 150,
+  "total_chunks": 1950,
+  "total_parent_sections": 1950,
+  "embedding_model": "BAAI/bge-m3",
+  "vector_database": "ChromaDB",
+  "indexing_time_sec": 57.24
+}
