@@ -116,47 +116,43 @@ Every policy document conforms to an identical 12-section standardized structure
 
 ## 🔄 Detailed 9-Stage LangGraph Execution Pipeline
 
-The LangGraph orchestration engine (`src/workflow/graph.py` and `src/workflow/nodes.py`) processes user questions through a verified, acyclic 9-stage pipeline:
+The LangGraph orchestration engine (`src/workflow/graph.py` and `src/workflow/nodes.py`) processes user questions through a verified, acyclic 9-stage arrow-based execution pipeline:
+
+```text
+[User Query] ──► [1. Query Analysis] ──► [2. Query Expansion] ──► [3. Hybrid Retrieval & RRF] ──► [4. Cross-Encoder Rerank] ──► [5. Parent Section Expansion] ──► [6. Contextual Compression] ──► [7. Context Assembly] ──► [8. Evidence Validation Gate] ──┬──► [Verified] ──► [9b. Grounded Synthesis] ──► [Response]
+                                                                                                                                                             └──► [Unverified] ──► [9a. Refusal & Escalation] ──┘
+```
 
 ```mermaid
-sequenceDiagram
-    autonumber
-    actor User as Employee (En / Bn)
-    participant QN as 1. Query Analysis
-    participant EN as 2. Query Expansion
-    participant RN as 3. Hybrid Retrieval & RRF
-    participant RK as 4. Cross-Encoder Rerank
-    participant PL as 5. Parent Section Lookup
-    participant CC as 6. Context Compression
-    participant CA as 7. Context Assembly
-    participant EV as 8. Evidence Validation Gate
-    participant AG as 9. Answer Generation & Citations
+flowchart TD
+    User["💬 User Question<br/><i>(English or Bengali)</i>"] --> QN["<b>1. Query Analysis Node</b><br/>• Language Identification (Unicode En/Bn)<br/>• Intent Classification (10 Structural Types)<br/>• Policy ID Extraction (e.g., HR-001, IT-002)<br/>• Target Section Mapping"]
 
-    User->>QN: Natural Language Question
-    Note over QN: Detects language, extracts Policy IDs, classifies intent, generates sub-queries
-    QN->>EN: State + Intent + Target Sections
-    Note over EN: Generates domain-specific search variants & maps cross-lingual concepts to English terms
-    EN->>RN: Multi-Queries + Metadata Filters
-    Note over RN: Executes BM25 (top 20) + Chroma Vector (top 20), fuses candidates via RRF (k=60)
-    RN->>RK: Top RRF Candidates
-    Note over RK: Scores chunks via Cross-Encoder with intent section weights (+30% match)
-    RK->>PL: Top Reranked Child Chunks
-    Note over PL: Resolves full parent sections (PID-SEC-NN) to eliminate chunk truncation
-    PL->>CC: Full Section Documents
-    Note over CC: Extracts mandatory clauses, deadlines, roles, and rules while pruning filler
-    CC->>CA: Compressed Context
-    Note over CA: Builds isolated evidence block tagged with canonical Policy IDs & Section titles
-    CA->>EV: Structured Evidence
-    alt Evidence Absent or Unverified Claim
-        Note over EV: Detects absent evidence or unverified numbers/guarantees
-        EV-->>AG: is_answerable = False, confidence = 0.0
-        Note over AG: Formats standard zero-hallucination refusal + Departmental Escalation Contact
-    else Evidence Verified
-        Note over EV: Computes term coverage, verifies numerical claims, confirms answerability
-        EV-->>AG: is_answerable = True, confidence = 0.20-1.0
-        Note over AG: Synthesizes intent-tailored answer, runs AnswerValidator, maps verifiable citations
-    end
-    AG-->>User: Grounded Response + Verified Citations
+    QN -->|"Enriched State + Target Sections"| EN["<b>2. Query Expansion Node</b><br/>• 3-4 Domain-Specific Sub-Queries<br/>• Bengali-to-English Policy Term Mapping"]
+
+    EN -->|"Multi-Query Dispatch"| RetrievalSplit{"<b>Parallel Retrieval</b>"}
+
+    RetrievalSplit -->|"Lexical Branch"| BM25["<b>BM25Okapi Search</b><br/>• Porter Stemming<br/>• 3x Weight on Title & Policy ID<br/>• Top-20 Chunks"]
+    RetrievalSplit -->|"Dense Vector Branch"| Chroma["<b>ChromaDB Vector Search</b><br/>• BAAI/bge-m3 1024-d Embeddings<br/>• Cosine Similarity Scoring<br/>• Top-20 Chunks"]
+
+    BM25 --> RRF["<b>3. Reciprocal Rank Fusion (RRF)</b><br/>• RRF Score = Σ 1 / (60 + Rank)<br/>• Dynamic Metadata Pre-Filtering"]
+    Chroma --> RRF
+
+    RRF -->|"Top Candidates"| Reranker["<b>4. Cross-Encoder Reranker</b><br/>• bge-reranker-v2-m3 Scoring<br/>• +30% Weight Boost on Intent Target Sections<br/>• Multi-Policy Diversity Preservation"]
+
+    Reranker -->|"Top-5 Chunks"| ParentLookup["<b>5. Parent Section Lookup Node</b><br/>• Resolves Child Chunks ➔ Full Parent Sections<br/>• Preserves Complete Legal Context (PID-SEC-NN)<br/>• Eliminates Sentence Truncation"]
+
+    ParentLookup -->|"Full Section Documents"| Compression["<b>6. Contextual Compression Node</b><br/>• Extracts Mandatory Clauses & Deadlines<br/>• Isolates Numeric Limits & Thresholds<br/>• Discards Non-Actionable Filler"]
+
+    Compression -->|"Compressed Evidence"| Assembly["<b>7. Policy Context Assembly Node</b><br/>• Builds Policy-Isolated Evidence Blocks<br/>• Tags Canonical Document & Section Headers<br/>• Prevents Cross-Policy Conflation"]
+
+    Assembly -->|"Structured Evidence"| ValidationGate{"<b>8. Evidence Validation Gate</b><br/>• Numerical Claim Verification<br/>• Query Concept Coverage Audit<br/>• Zero-Hallucination Gate"}
+
+    ValidationGate -->|"❌ Evidence Missing / Claim Unverified<br/>[is_answerable = False, confidence = 0.0]"| RefusalNode["<b>9a. Grounded Refusal & Escalation</b><br/>• Standardized Out-of-Scope Disclaimer<br/>• Official Departmental Escalation Contact<br/><i>(HR Helpdesk, IT Desk, Finance, Legal)</i>"]
+
+    ValidationGate -->|"✅ Evidence Grounded & Verified<br/>[is_answerable = True, confidence = 0.20-1.0]"| AnswerNode["<b>9b. Intent-Aware Answer Synthesis</b><br/>• Formats by Intent: Checklist, Workflow, Matrix<br/>• Post-Generation AnswerValidator Audit<br/>• Verifiable Policy ID & Section Citations"]
+
+    RefusalNode --> FinalResponse["📋 <b>Verified Response Delivered to User</b>"]
+    AnswerNode --> FinalResponse
 ```
 
 ### Stage Details
