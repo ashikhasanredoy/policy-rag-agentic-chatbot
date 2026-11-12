@@ -35,7 +35,7 @@ cleanup_review/
 *.db
 *.sqlite
 *.sqlite3
-!vectorstore/chroma_db/chroma.sqlite3
+vectorstore/
 qdrant_storage/
 
 # Environment Variables & Secrets
