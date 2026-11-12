@@ -3,12 +3,18 @@ from typing import Optional, List, Dict, Any
 from datetime import datetime
 
 class CitationSource(BaseModel):
+    model_config = ConfigDict(extra="allow")
+
     policy: str
+    policy_id: Optional[str] = None
+    policy_name: Optional[str] = None
     section: Optional[str] = "General"
     page: Optional[int] = 1
     version: Optional[str] = "1.0"
     score: Optional[float] = 0.0
     text_snippet: Optional[str] = None
+    snippet: Optional[str] = None
+    relevance_score: Optional[float] = 0.0
 
 class GraderTrace(BaseModel):
     relevance_passed: bool

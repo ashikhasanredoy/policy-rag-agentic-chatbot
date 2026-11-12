@@ -1,4 +1,5 @@
 import os
+import csv
 import asyncio
 from pathlib import Path
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -10,72 +11,10 @@ from backend.app.database.repository import UserRepository
 from backend.app.services.ingestion_service import ingestion_service
 from backend.app.database.connection import AsyncSessionLocal, init_db
 
-POLICIES_MANIFEST = [
-    {
-        "file": "data/policies/hr/annual_leave_policy_v2.md",
-        "name": "Comprehensive Annual Leave and Absence Management Policy",
-        "category": "HR",
-        "department": "Global People & Culture",
-        "version": "2.1",
-        "description": "20-day annual leave accrual (1.67 days/mo), 5-day carryover expiring March 31, parental leave (16 weeks maternity, 6 weeks paternity), sick leave, and bereavement."
-    },
-    {
-        "file": "data/policies/hr/remote_work_policy_v2.1.md",
-        "name": "Remote, Hybrid Workplace, and Telecommuting Policy",
-        "category": "HR",
-        "department": "Global People & Culture",
-        "version": "2.2",
-        "description": "Hybrid schedule up to 2 days/week, core hours (10 AM - 4 PM), $500 home office ergonomic stipend, $50/mo internet allowance, and international telecommuting limits."
-    },
-    {
-        "file": "data/policies/hr/employee_benefits_and_compensation_v2.md",
-        "name": "Employee Benefits, Compensation Structure, and Wellness Policy",
-        "category": "HR",
-        "department": "Global Total Rewards & Benefits",
-        "version": "2.1",
-        "description": "Medical/Dental/Vision plans, 401(k) 50% match up to 6% salary, $5,250 annual tuition assistance, 2x salary life insurance, STD/LTD, and $75/mo gym fitness subsidy."
-    },
-    {
-        "file": "data/policies/finance/travel_expense_policy_v3.md",
-        "name": "Business Travel, Expense Reimbursement, and Corporate Card Policy",
-        "category": "Finance",
-        "department": "Global Finance, Accounting & Procurement",
-        "version": "3.1",
-        "description": "Daily meal per diem ($75 max), hotel limits ($200 std / $280 Tier-1), flights under 5 hrs in economy, 30-day Concur submission deadline, and mileage ($0.67/mi)."
-    },
-    {
-        "file": "data/policies/it/byod_and_security_policy_v1.5.md",
-        "name": "Bring Your Own Device (BYOD) and IT Endpoint Security Policy",
-        "category": "IT",
-        "department": "Global Information Technology & Infrastructure",
-        "version": "1.6",
-        "description": "Mobile MDM enrollment, 6-digit PIN / biometric lock, 3-year laptop refresh cycles, 2-hour lost device reporting SLA, and remote wipe protocols."
-    },
-    {
-        "file": "data/policies/security/information_security_policy_v2.md",
-        "name": "Corporate Information Security and Access Control Policy",
-        "category": "Security",
-        "department": "Global Information Security & Compliance",
-        "version": "2.1",
-        "description": "SOC2/ISO27001 data classification (Tiers 1-4), 14-char password complexity, mandatory FIDO2 hardware MFA, AES-256 / TLS 1.3 encryption, and incident response matrix."
-    },
-    {
-        "file": "data/policies/operations/code_of_conduct_v1.md",
-        "name": "Code of Business Conduct, Corporate Ethics, and Whistleblower Policy",
-        "category": "Operations",
-        "department": "Legal, Compliance & Executive Ethics",
-        "version": "1.1",
-        "description": "FCPA anti-bribery standards, gift limits ($100 cap), outside activity disclosures, insider trading rules, and 24/7 confidential ethics reporting hotline."
-    },
-    {
-        "file": "data/policies/customer/customer_data_privacy_v2.md",
-        "name": "Customer Data Privacy and Global Compliance (GDPR/CCPA) Policy",
-        "category": "Customer",
-        "department": "Data Privacy, Legal & Security Office",
-        "version": "2.1",
-        "description": "GDPR/CCPA customer rights (Access, Erasure, Portability), 30-day DSAR response SLA, 7-year financial record retention, and Standard Contractual Clauses (SCCs)."
-    }
-]
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+REGISTER_CSV = PROJECT_ROOT / "metadata" / "Policy_Register.csv"
+POLICIES_DIR = PROJECT_ROOT / "policies"
+
 
 async def seed_initial_data(db: AsyncSession):
     user_repo = UserRepository(db)
@@ -103,11 +42,39 @@ async def seed_initial_data(db: AsyncSession):
         )
         await user_repo.create(emp)
 
-    # 2. Ingest Sample Policies into DB, Qdrant, and BM25
-    for item in POLICIES_MANIFEST:
-        file_path = os.path.join(settings.BASE_DIR, item["file"])
+    # 2. Build Ingestion Manifest from canonical Policy_Register.csv
+    all_manifest = []
+    if REGISTER_CSV.exists():
+        with open(REGISTER_CSV, mode="r", encoding="utf-8-sig") as f:
+            reader = csv.DictReader(f)
+            for row in reader:
+                pid = row.get("Policy ID", "").strip()
+                if not pid:
+                    continue
+                dept_code = pid.split("-")[0]
+                pdf_rel = row.get("PDF File", "").strip()
+                fname = Path(pdf_rel).name.replace(".pdf", ".md") if pdf_rel else f"{pid}.md"
+                md_path = POLICIES_DIR / dept_code / fname
+                if md_path.exists():
+                    dept = row.get("Department", "General")
+                    eff_date = row.get("Effective Date", "2026-11-08").replace(" (placeholder)", "")
+                    all_manifest.append({
+                        "file": str(md_path),
+                        "name": row.get("Policy Title", pid),
+                        "category": dept,
+                        "department": dept,
+                        "version": row.get("Version", "1.0"),
+                        "description": f"{pid} - {row.get('Policy Title', '')}: owned by {row.get('Policy Owner', 'Corporate')}.",
+                        "status": "active",
+                        "effective_date": eff_date,
+                    })
+
+    logger.info(f"Preparing ingestion for {len(all_manifest)} enterprise policy documents...")
+    for idx, item in enumerate(all_manifest, start=1):
+        file_path = item["file"]
         if os.path.exists(file_path):
-            logger.info(f"Ingesting seed policy: {item['name']}")
+            if idx <= 5 or idx % 30 == 0 or idx == len(all_manifest):
+                logger.info(f"[{idx}/{len(all_manifest)}] Ingesting policy: {item['name']}")
             await ingestion_service.ingest_document(
                 db=db,
                 file_path=file_path,
@@ -115,15 +82,13 @@ async def seed_initial_data(db: AsyncSession):
                 category=item["category"],
                 department=item["department"],
                 version=item["version"],
-                description=item["description"],
+                description=item.get("description", ""),
                 status="active",
-                effective_date="2026-01-01",
+                effective_date=item.get("effective_date", "2026-01-01"),
                 created_by="System Seeder"
             )
-        else:
-            logger.warning(f"Seed file not found: {file_path}")
 
-    logger.info("Database and vector store seeding completed successfully!")
+    logger.info(f"Database and metadata seeding completed successfully! Total indexed: {len(all_manifest)} policies.")
 
 if __name__ == "__main__":
     async def main():

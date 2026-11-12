@@ -29,11 +29,13 @@ wheels/
 htmlcov/
 .mypy_cache/
 .ruff_cache/
+cleanup_review/
 
 # Databases & Vector Store Local Files
 *.db
 *.sqlite
 *.sqlite3
+!vectorstore/chroma_db/chroma.sqlite3
 qdrant_storage/
 
 # Environment Variables & Secrets
